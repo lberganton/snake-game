@@ -128,8 +128,10 @@ void initializeGameElements(void) {
 
 void mainMenu(User *user) {
   int choice;
+
   while (true) {
     choice = interfaceMenu("Snake", 3, "Iniciar", "Pontuação", "Sair");
+    
     switch (choice) {
     case 1:
       startGame(user);
