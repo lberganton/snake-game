@@ -1,6 +1,5 @@
 #include <curses.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <locale.h>
 #include <string.h>
 #include <stdbool.h>
@@ -14,8 +13,6 @@ GmElement ElSnakeHead;
 GmElement ElSnakeBody;
 GmElement ElFood;
 
-bool loadData(User *user);
-bool saveData(User *user);
 void initializeGameElements(void);
 void initializeCurses(void);
 void initializeColors(void);
@@ -88,30 +85,6 @@ void initializeColors(void) {
   init_pair(GmRed, COLOR_RED, COLOR_BLACK);
   init_pair(GmGreen, COLOR_GREEN, COLOR_BLACK);
   init_pair(GmBlue, COLOR_BLUE, COLOR_BLACK);
-}
-
-bool loadData(User *user) {
-  FILE *file = fopen("data", "rb");
-  if (!file) {
-    return false;
-  }
-  fread(user->name, sizeof(char), 32, file);
-  fread(&user->mostRecentScore, sizeof(uint32_t), 1, file);
-  fread(&user->bestScore, sizeof(uint32_t), 1, file);
-  fclose(file);
-  return true;
-}
-
-bool saveData(User *user) {
-  FILE *file = fopen("data", "wb");
-  if (!file) {
-    return false;
-  }
-  fwrite(user->name, sizeof(char), 32, file);
-  fwrite(&user->mostRecentScore, sizeof(uint32_t), 1, file);
-  fwrite(&user->bestScore, sizeof(uint32_t), 1, file);
-  fclose(file);
-  return true;
 }
 
 void initializeGameElements(void) {

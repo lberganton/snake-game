@@ -19,5 +19,7 @@ typedef struct User {
   uint32_t bestScore;
 } User;
 
+bool loadData(User *user);
+bool saveData(User *user);
 void printCenterMessage(const char *msg, WINDOW *window);
 void getUserName(User *user);
