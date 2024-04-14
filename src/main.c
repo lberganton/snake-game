@@ -46,7 +46,8 @@ int main(void) {
 
   if (!loadData(&user)) {
     getUserName(&user);
-    user.points = 0;
+    user.bestScore = 0;
+    user.mostRecentScore = 0;
   }
 
   initializeGameElements();
@@ -94,9 +95,9 @@ bool loadData(User *user) {
   if (!file) {
     return false;
   }
-  fgets(user->name, 31, file);
-  user->name[strlen(user->name) - 1] = '\0';
-  fscanf(file, "%" SCNu32, &user->points);
+  fread(user->name, sizeof(char), 32, file);
+  fread(&user->mostRecentScore, sizeof(uint32_t), 1, file);
+  fread(&user->bestScore, sizeof(uint32_t), 1, file);
   fclose(file);
   return true;
 }
@@ -106,7 +107,9 @@ bool saveData(User *user) {
   if (!file) {
     return false;
   }
-  fprintf(file, "%s\n%" PRIu32, user->name, user->points);
+  fwrite(user->name, sizeof(char), 32, file);
+  fwrite(&user->mostRecentScore, sizeof(uint32_t), 1, file);
+  fwrite(&user->bestScore, sizeof(uint32_t), 1, file);
   fclose(file);
   return true;
 }
@@ -141,7 +144,9 @@ void mainMenu(User *user) {
 }
 
 void userMenu(User *user) {
-  char buffer[40];
-  sprintf(buffer, "%s: %" PRIu32 " Pontos", user->name, user->points);
-  interfaceString("Pontuação", 1, buffer); 
+  char mostRecentScore[30];
+  char bestScore[30];
+  snprintf(mostRecentScore, 30, "*Pontuação Recente: %" PRIu32, user->mostRecentScore);
+  snprintf(bestScore, 30, "*Melhor Pontuação:  %" PRIu32, user->bestScore);
+  interfaceString("Pontuação", 3, user->name, mostRecentScore, bestScore); 
 }

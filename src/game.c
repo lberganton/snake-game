@@ -63,8 +63,10 @@ void startGame(User *user) {
 
   while (true) {
     updateGameScreen(&player, &map, &screen);
+
     input = wgetch(map.window);
     while (wgetch(map.window) != ERR);
+
     if (!updatePlayer(&map, &player, &food, input)) {
       printCenterMessage(MSG_YOU_LOSE, map.window);
       wrefresh(map.window);
@@ -72,12 +74,14 @@ void startGame(User *user) {
       while (wgetch(map.window) != ERR);
       break;
     }
+    
     usleep((double) GAME_MAX_DELAY - player.speed * ((GAME_MAX_DELAY - GAME_MIN_DELAY) / GAME_SPEED_INCREASE));
   }
 
   deletePlayer(&player);
 
-  user->points += player.points;
+  user->mostRecentScore = player.points;
+  user->bestScore = player.points > user->bestScore ? player.points : user->bestScore;
 
   wclear(map.window); 
   wrefresh(map.window);
