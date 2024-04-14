@@ -14,6 +14,7 @@ void initializePlayer(GmPlayer *player, GmMap *map) {
   player->size = 1;
   player->collected = 0;
   player->points = 0;
+  player->speed = 0;
   player->y = Y_PLAYER;
   player->x = X_PLAYER;
   player->direction = PlUp;
@@ -104,6 +105,9 @@ bool updatePlayer(GmMap *map, GmPlayer *player, GmFood *food, int input) {
   if (player->y == food->y && player->x == food->x) {
     updateFood(food, map, player);
     createBody(map, player);
+    if (player->speed < GAME_SPEED_INCREASE) {
+      player->speed++;
+    }
   }
 
   map->matrix[player->y][player->x] = ElSnakeHead;

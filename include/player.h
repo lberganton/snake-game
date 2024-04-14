@@ -21,6 +21,7 @@ typedef struct GmPlayer {
   uint32_t points;
   uint16_t size;
   uint16_t collected;
+  uint32_t speed;
   uint16_t x, y;
   PlDirections direction;
   GmBody *start, *end;

@@ -79,7 +79,7 @@ void startGame(User *user) {
       while (wgetch(map.window) != ERR);
       break;
     }
-    usleep(GAME_DELAY);
+    usleep((double) GAME_MAX_DELAY - player.speed * ((GAME_MAX_DELAY - GAME_MIN_DELAY) / GAME_SPEED_INCREASE));
   }
 
   deletePlayer(&player);
