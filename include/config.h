@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ncurses.h>
+#include <curses.h>
 #include <stdint.h>
 
 #define FILE_DATA "data"

@@ -1,7 +1,7 @@
 #include "player.h"
 #include "game.h"
 #include "config.h"
-#include <ncurses.h>
+#include <curses.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>

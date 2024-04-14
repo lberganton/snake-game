@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ncurses.h"
+#include "curses.h"
 #include <stdarg.h>
 #include <string.h>
 
