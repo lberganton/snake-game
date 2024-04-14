@@ -1,5 +1,4 @@
 #include <curses.h>
-#include <curses.h>
 #include <stdio.h>
 #include <locale.h>
 #include <string.h>
@@ -22,6 +21,13 @@ int main(void) {
   setlocale(LC_CTYPE, "");
 
   initializeCurses();
+
+  if (!has_colors()) {
+    endwin();
+    printf("Snake: Terminal não suporta cores.\n");
+    return 1;
+  }
+
   initializeColors();
 
   if (LINES < 24 || COLS < 80) {
@@ -61,9 +67,14 @@ void initializeCurses(void) {
 
 void initializeColors(void) {
   start_color();
-  init_color(COLOR_RED, 700, 0, 0);
-  init_color(COLOR_GREEN, 0, 700, 0);
-  init_color(COLOR_BLUE, 0, 1000, 1000);
+
+  if (can_change_color()) {
+    init_color(COLOR_BLACK, 128, 128, 128);
+    init_color(COLOR_RED, 700, 0, 0);
+    init_color(COLOR_GREEN, 0, 700, 0);
+    init_color(COLOR_BLUE, 0, 1000, 1000);
+  }
+
   init_pair(GmBlack, COLOR_BLACK, COLOR_BLACK);
   init_pair(GmWhite, COLOR_WHITE, COLOR_BLACK);
   init_pair(GmRed, COLOR_RED, COLOR_BLACK);

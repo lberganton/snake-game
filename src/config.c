@@ -1,6 +1,5 @@
 #include "config.h"
 #include <curses.h>
-#include <curses.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <ctype.h>
