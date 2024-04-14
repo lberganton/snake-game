@@ -25,7 +25,7 @@ typedef struct GmElement {
 
 typedef struct GmMap {
   WINDOW *window;
-  GmElement matrix[Y_MAP][X_MAP];
+  GmElement *matrix[Y_MAP][X_MAP];
 } GmMap;
 
 typedef struct GmFood {
@@ -40,7 +40,6 @@ typedef struct GmScreen {
 typedef struct GmPlayer GmPlayer;
 
 void initializeMap(GmMap *map, GmScreen *screen);
-void initializeGameElements(void);
 void initializeFood(GmFood *food, GmMap *map);
 void startGame(User *user);
 void updateFood(GmFood *food, GmMap *map, GmPlayer *player);

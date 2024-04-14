@@ -8,17 +8,10 @@
 #include <inttypes.h>
 #include <unistd.h>
 
-GmElement ElVoid;
-GmElement ElSnakeHead;
-GmElement ElSnakeBody;
-GmElement ElFood;
-
-void initializeGameElements(void) {
-  ElVoid = (GmElement) {.graphic = ' ', .attribute = COLOR_PAIR(GmBlack)};
-  ElSnakeHead = (GmElement) {.graphic = ACS_BOARD, .attribute = COLOR_PAIR(GmBlue)};
-  ElSnakeBody = (GmElement) {.graphic = ACS_BOARD, .attribute = COLOR_PAIR(GmWhite)};
-  ElFood = (GmElement) {.graphic = ACS_DIAMOND, .attribute = COLOR_PAIR(GmRed)};
-}
+extern GmElement ElVoid;
+extern GmElement ElSnakeHead;
+extern GmElement ElSnakeBody;
+extern GmElement ElFood;
 
 void initializeGameScreen(GmScreen *screen) {
   screen->border = newwin(Y_MAP + 2, X_MAP + 2, (LINES - (Y_MAP + 2 + 3)) / 2, (COLS - (X_MAP + 2)) / 2);
@@ -36,10 +29,10 @@ void initializeMap(GmMap *map, GmScreen *screen) {
   keypad(map->window, true);
   for (size_t i = 0; i < Y_MAP; i++) {
     for (size_t j = 0; j < X_MAP; j++) {
-      map->matrix[i][j] = ElVoid;
+      map->matrix[i][j] = &ElVoid;
     }
   }
-  map->matrix[Y_PLAYER][X_PLAYER] = ElSnakeHead;
+  map->matrix[Y_PLAYER][X_PLAYER] = &ElSnakeHead;
 }
 
 void initializeFood(GmFood *food, GmMap *map) {
@@ -47,8 +40,8 @@ void initializeFood(GmFood *food, GmMap *map) {
   do {
     food->y = rand() % (Y_MAP - 1);
     food->x = rand() % (X_MAP - 1);
-  } while (map->matrix[food->y][food->x].attribute != ElVoid.attribute && map->matrix[food->y][food->x].graphic != ElVoid.graphic);
-  map->matrix[food->y][food->x] = ElFood;
+  } while (map->matrix[food->y][food->x] != &ElVoid);
+  map->matrix[food->y][food->x] = &ElFood;
 
   wattrset(map->window, ElFood.attribute);
   mvwaddch(map->window, food->y, food->x, ElFood.graphic);
@@ -100,12 +93,12 @@ void startGame(User *user) {
 void updateFood(GmFood *food, GmMap *map, GmPlayer *player) {
   player->collected++;
   player->points += 10;
-  map->matrix[food->y][food->x] = ElVoid;
+  map->matrix[food->y][food->x] = &ElVoid;
   do {
     food->y = rand() % (Y_MAP - 1);
     food->x = rand() % (X_MAP - 1);
-  } while (map->matrix[food->y][food->x].attribute != ElVoid.attribute && map->matrix[food->y][food->x].graphic != ElVoid.graphic);
-  map->matrix[food->y][food->x] = ElFood;
+  } while (map->matrix[food->y][food->x] != &ElVoid);
+  map->matrix[food->y][food->x] = &ElFood;
 
   wattrset(map->window, ElFood.attribute);
   mvwaddch(map->window, food->y, food->x, ElFood.graphic);

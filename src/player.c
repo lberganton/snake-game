@@ -86,17 +86,17 @@ bool updatePlayer(GmMap *map, GmPlayer *player, GmFood *food, int input) {
     break;
   }
 
-  if (map->matrix[player->y][player->x].attribute == ElSnakeBody.attribute && map->matrix[player->y][player->x].graphic == ElSnakeBody.graphic) {
+  if (map->matrix[player->y][player->x] == &ElSnakeBody) {
     wattrset(map->window, ElSnakeHead.attribute);
     mvwaddch(map->window, player->y, player->x, ElSnakeHead.graphic);
     return false;
   }
 
-  map->matrix[oldY][oldX] = ElVoid;
+  map->matrix[oldY][oldX] = &ElVoid;
   wattrset(map->window, ElVoid.attribute);
   mvwaddch(map->window, oldY, oldX, ElVoid.graphic);
 
-  map->matrix[player->y][player->x] = ElSnakeHead;
+  map->matrix[player->y][player->x] = &ElSnakeHead;
   wattrset(map->window, ElSnakeHead.attribute);
   mvwaddch(map->window, player->y, player->x, ElSnakeHead.graphic);
 
@@ -110,7 +110,7 @@ bool updatePlayer(GmMap *map, GmPlayer *player, GmFood *food, int input) {
     }
   }
 
-  map->matrix[player->y][player->x] = ElSnakeHead;
+  map->matrix[player->y][player->x] = &ElSnakeHead;
 
   return true;
 }
@@ -120,13 +120,13 @@ bool updateBody(GmMap *map, GmPlayer *player, uint16_t y, uint16_t x) {
   uint16_t tempY, tempX;
 
   while (body) {
-    map->matrix[body->y][body->x] = ElVoid;
+    map->matrix[body->y][body->x] = &ElVoid;
     wattrset(map->window, ElVoid.attribute);
     mvwaddch(map->window, body->y, body->x, ElVoid.graphic);
 
     wattrset(map->window, ElSnakeBody.attribute);
     mvwaddch(map->window, y, x, ElSnakeBody.graphic);
-    map->matrix[y][x] = ElSnakeBody;
+    map->matrix[y][x] = &ElSnakeBody;
 
     tempY = y;
     tempX = x;
@@ -165,7 +165,7 @@ bool createBody(GmMap *map, GmPlayer *player) {
     player->end = new;
   }
 
-  map->matrix[new->y][new->x] = ElSnakeBody;
+  map->matrix[new->y][new->x] = &ElSnakeBody;
 
   return true;
 }

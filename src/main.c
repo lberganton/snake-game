@@ -1,5 +1,6 @@
 #include <curses.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <locale.h>
 #include <string.h>
 #include <stdbool.h>
@@ -8,8 +9,14 @@
 #include "game.h"
 #include "config.h"
 
+GmElement ElVoid;
+GmElement ElSnakeHead;
+GmElement ElSnakeBody;
+GmElement ElFood;
+
 bool loadData(User *user);
 bool saveData(User *user);
+void initializeGameElements(void);
 void initializeCurses(void);
 void initializeColors(void);
 void mainMenu(User *user);
@@ -37,12 +44,12 @@ int main(void) {
     return 1;
   }
 
-  initializeGameElements();
-
   if (!loadData(&user)) {
     getUserName(&user);
     user.points = 0;
   }
+
+  initializeGameElements();
 
   mainMenu(&user);
 
@@ -102,6 +109,18 @@ bool saveData(User *user) {
   fprintf(file, "%s\n%" PRIu32, user->name, user->points);
   fclose(file);
   return true;
+}
+
+void initializeGameElements(void) {
+  ElVoid.graphic = ' ';
+  ElSnakeHead.graphic = ACS_BOARD;
+  ElSnakeBody.graphic = ACS_BOARD;
+  ElFood.graphic = ACS_DIAMOND;
+
+  ElVoid.attribute = COLOR_PAIR(GmBlack);
+  ElSnakeHead.attribute = COLOR_PAIR(GmBlue);
+  ElSnakeBody.attribute = COLOR_PAIR(GmWhite);
+  ElFood.attribute = COLOR_PAIR(GmRed);
 }
 
 void mainMenu(User *user) {
