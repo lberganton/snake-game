@@ -1,7 +1,7 @@
 #pragma once
 
 #include <curses.h>
-#include <stdint.h>
+#include <inttypes.h>
 
 #define FILE_DATA "data"
 #define NAME_LEN 15
@@ -21,4 +21,3 @@ typedef struct User {
 
 bool loadData(User *user);
 bool saveData(User *user);
-void getUserName(User *user);
