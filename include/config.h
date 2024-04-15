@@ -21,5 +21,4 @@ typedef struct User {
 
 bool loadData(User *user);
 bool saveData(User *user);
-void printCenterMessage(const char *msg, WINDOW *window);
 void getUserName(User *user);

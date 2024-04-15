@@ -1,4 +1,5 @@
 #include "config.h"
+#include "interface.h"
 #include <curses.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -28,11 +29,6 @@ bool saveData(User *user) {
   fwrite(&user->bestScore, sizeof(uint32_t), 1, file);
   fclose(file);
   return true;
-}
-
-void printCenterMessage(const char *msg, WINDOW *window) {
-  wattrset(window, A_REVERSE);
-  mvwprintw(window, getmaxy(window) / 2, (getmaxx(window) - strlen(msg)) / 2, "%s", msg);
 }
 
 void getUserName(User *user) {

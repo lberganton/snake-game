@@ -1,6 +1,7 @@
 #include "player.h"
 #include "game.h"
 #include "config.h"
+#include "interface.h"
 #include <curses.h>
 #include <stdlib.h>
 #include <stdint.h>
