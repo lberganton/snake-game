@@ -21,9 +21,8 @@ void initializePlayer(GmPlayer *player, GmMap *map) {
   player->direction = PlUp;
   player->start = NULL;
   player->end = NULL;
-
-  wattrset(map->window, ElSnakeHead.attribute);
-  mvwaddch(map->window, player->y, player->x, ElSnakeHead.graphic);
+  
+  map->matrix[player->y][player->x] = &ElSnakeHead;
 }
 
 bool updatePlayer(GmMap *map, GmPlayer *player, GmFood *food, int input) {
@@ -104,11 +103,17 @@ bool updatePlayer(GmMap *map, GmPlayer *player, GmFood *food, int input) {
   updateBody(map, player, oldY, oldX);
 
   if (player->y == food->y && player->x == food->x) {
-    updateFood(food, map, player);
-    createBody(map, player);
+    player->collected++;
+    player->points += 10;
+
     if (player->speed < GAME_SPEED_INCREASE) {
       player->speed++;
     }
+
+    map->matrix[food->y][food->x] = &ElVoid;
+    createFood(food, map);
+    paintFood(food, map);
+    createBody(map, player);
   }
 
   map->matrix[player->y][player->x] = &ElSnakeHead;

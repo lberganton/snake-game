@@ -34,13 +34,6 @@ int main(void) {
 
   initializeColors();
 
-  if (LINES < 24 || COLS < 80) {
-    printCenterMessage("Janela muito pequena! Tamanho esperado: 80x24", stdscr);
-    getch();
-    endwin();
-    return 1;
-  }
-
   if (!loadData(&user)) {
     getUserName(&user);
     user.bestScore = 0;
@@ -107,6 +100,9 @@ void mainMenu(User *user) {
     
     switch (choice) {
     case 1:
+      if (LINES < Y_MAP + 5 || COLS < X_MAP + 2) {
+        handleWithSmallTermSize(Y_MAP + 5, X_MAP + 2);
+      }
       startGame(user);
       break;
     case 2:

@@ -39,8 +39,11 @@ typedef struct GmScreen {
 
 typedef struct GmPlayer GmPlayer;
 
-void initializeMap(GmMap *map, GmScreen *screen);
-void initializeFood(GmFood *food, GmMap *map);
+void initializeGameScreen(GmMap *map, GmScreen *screen);
+void deleteGameScreen(GmMap *map, GmScreen *screen);
+void initializeMap(GmMap *map);
 void startGame(User *user);
-void updateFood(GmFood *food, GmMap *map, GmPlayer *player);
-void updateGameScreen(const User *user, const GmPlayer *player, const GmMap *map, const GmScreen *screen);
+void createFood(GmFood *food, GmMap *map);
+void paintFood(GmFood *food, GmMap *map);
+void paintMap(GmMap *map);
+void updateGameScreen(User *user, GmPlayer *player, GmMap *map, GmScreen *screen);

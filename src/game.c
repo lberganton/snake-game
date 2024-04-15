@@ -14,41 +14,41 @@ extern GmElement ElSnakeHead;
 extern GmElement ElSnakeBody;
 extern GmElement ElFood;
 
-void initializeGameScreen(GmScreen *screen) {
+void initializeGameScreen(GmMap *map, GmScreen *screen) {
   screen->border = newwin(Y_MAP + 2, X_MAP + 2, (LINES - (Y_MAP + 2 + 3)) / 2, (COLS - (X_MAP + 2)) / 2);
   box(screen->border, ACS_VLINE, ACS_HLINE);
 
   screen->info = newwin(3, getmaxx(screen->border), getbegy(screen->border) + getmaxy(screen->border), getbegx(screen->border));
   box(screen->info, ACS_VLINE, ACS_HLINE);
+
+  map->window = newwin(Y_MAP, X_MAP, getbegy(screen->border) + 1, getbegx(screen->border) + 1);
+  keypad(map->window, true);
+  nodelay(map->window, true);
   
   wrefresh(screen->border);
   wrefresh(screen->info);
 }
 
-void initializeMap(GmMap *map, GmScreen *screen) {
-  map->window = newwin(Y_MAP, X_MAP, getbegy(screen->border) + 1, getbegx(screen->border) + 1);
-  keypad(map->window, true);
+void deleteGameScreen(GmMap *map, GmScreen *screen) {
+  wclear(map->window); 
+  wclear(screen->border);
+  wclear(screen->info);
+
+  wrefresh(map->window);
+  wrefresh(screen->border);
+  wrefresh(screen->info);
   
+  delwin(map->window);
+  delwin(screen->border);
+  delwin(screen->info);
+}
+
+void initializeMap(GmMap *map) {
   for (size_t i = 0; i < Y_MAP; i++) {
     for (size_t j = 0; j < X_MAP; j++) {
       map->matrix[i][j] = &ElVoid;
     }
   }
-
-  map->matrix[Y_PLAYER][X_PLAYER] = &ElSnakeHead;
-}
-
-void initializeFood(GmFood *food, GmMap *map) {
-  srand(time(NULL));
-
-  do {
-    food->y = rand() % (Y_MAP - 1);
-    food->x = rand() % (X_MAP - 1);
-  } while (map->matrix[food->y][food->x] != &ElVoid);
-  map->matrix[food->y][food->x] = &ElFood;
-
-  wattrset(map->window, ElFood.attribute);
-  mvwaddch(map->window, food->y, food->x, ElFood.graphic);
 }
 
 void startGame(User *user) {
@@ -58,18 +58,27 @@ void startGame(User *user) {
   GmScreen screen;
   int input;
 
-  initializeGameScreen(&screen);
-  initializeMap(&map, &screen);
+  initializeGameScreen(&map, &screen);
+  initializeMap(&map);
   initializePlayer(&player, &map);
-  initializeFood(&food, &map);
-
-  nodelay(map.window, true);
+  createFood(&food, &map);
+  paintMap(&map);
 
   while (true) {
-    updateGameScreen(user, &player, &map, &screen);
-
     input = wgetch(map.window);
     while (wgetch(map.window) != ERR);
+
+    if (input == KEY_RESIZE) {
+      if (LINES < Y_MAP + 5 || COLS < X_MAP + 2) {
+        handleWithSmallTermSize(Y_MAP + 5, X_MAP + 2);
+      }
+      
+      deleteGameScreen(&map, &screen);
+      initializeGameScreen(&map, &screen);
+      paintMap(&map);
+    }
+
+    updateGameScreen(user, &player, &map, &screen);
 
     if (!updatePlayer(&map, &player, &food, input)) {
       printCenterMessage(MSG_YOU_LOSE, map.window);
@@ -87,21 +96,25 @@ void startGame(User *user) {
   user->mostRecentScore = player.points;
   user->bestScore = player.points > user->bestScore ? player.points : user->bestScore;
 
-  wclear(map.window); 
-  wrefresh(map.window);
-  delwin(map.window);
-  wclear(screen.border);
-  wrefresh(screen.border);
-  delwin(screen.border);
-  wclear(screen.info);
-  wrefresh(screen.info);
-  delwin(screen.info);
+  deleteGameScreen(&map, &screen);
 }
 
-void updateFood(GmFood *food, GmMap *map, GmPlayer *player) {
-  player->collected++;
-  player->points += 10;
-  map->matrix[food->y][food->x] = &ElVoid;
+void paintFood(GmFood *food, GmMap *map) {
+  wattrset(map->window, ElFood.attribute);
+  mvwaddch(map->window, food->y, food->x, ElFood.graphic);
+}
+
+void paintMap(GmMap *map) {
+  for (size_t i = 0; i < Y_MAP; i++) {
+    for (size_t j = 0; j < X_MAP; j++) {
+      wattrset(map->window, map->matrix[i][j]->attribute);
+      mvwaddch(map->window, i, j, map->matrix[i][j]->graphic);
+    }
+  }
+}
+
+void createFood(GmFood *food, GmMap *map) {
+  srand(time(NULL));
 
   do {
     food->y = rand() % (Y_MAP - 1);
@@ -109,26 +122,23 @@ void updateFood(GmFood *food, GmMap *map, GmPlayer *player) {
   } while (map->matrix[food->y][food->x] != &ElVoid);
 
   map->matrix[food->y][food->x] = &ElFood;
-
-  wattrset(map->window, ElFood.attribute);
-  mvwaddch(map->window, food->y, food->x, ElFood.graphic);
 }
 
-static void printScreenInfo(const GmScreen *screen, uint8_t y, uint8_t x, const char *descriptor, uint32_t info) {
+static void printScreenInfo(GmScreen *screen, uint8_t y, uint8_t x, char *descriptor, uint32_t info) {
   wattrset(screen->info, A_REVERSE);
   mvwprintw(screen->info, y, x, "%s", descriptor);
   wattrset(screen->info, A_NORMAL);
   wprintw(screen->info, ": %" PRIu32, info);
 }
 
-void updateGameScreen(const User *user, const GmPlayer *player, const GmMap *map, const GmScreen *screen) { 
+void updateGameScreen(User *user, GmPlayer *player, GmMap *map, GmScreen *screen) { 
   wrefresh(map->window);
 
-  uint8_t sector = (getmaxx(screen->info) - 2) / 3;
+  uint8_t block = (getmaxx(screen->info) - 2) / 3;
 
   printScreenInfo(screen, 1, 1, "Pontuação do Jogo", player->points);
-  printScreenInfo(screen, 1, sector, "Comidas Coletadas", (uint32_t) player->collected);
-  printScreenInfo(screen, 1, sector * 2, "Melhor Pontuação", user->bestScore);
+  printScreenInfo(screen, 1, block, "Comidas Coletadas", (uint32_t) player->collected);
+  printScreenInfo(screen, 1, block * 2, "Melhor Pontuação", user->bestScore);
 
   wrefresh(screen->info);
 }
