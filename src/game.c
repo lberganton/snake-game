@@ -27,16 +27,19 @@ void initializeGameScreen(GmScreen *screen) {
 void initializeMap(GmMap *map, GmScreen *screen) {
   map->window = newwin(Y_MAP, X_MAP, getbegy(screen->border) + 1, getbegx(screen->border) + 1);
   keypad(map->window, true);
+  
   for (size_t i = 0; i < Y_MAP; i++) {
     for (size_t j = 0; j < X_MAP; j++) {
       map->matrix[i][j] = &ElVoid;
     }
   }
+
   map->matrix[Y_PLAYER][X_PLAYER] = &ElSnakeHead;
 }
 
 void initializeFood(GmFood *food, GmMap *map) {
   srand(time(NULL));
+
   do {
     food->y = rand() % (Y_MAP - 1);
     food->x = rand() % (X_MAP - 1);
@@ -98,10 +101,12 @@ void updateFood(GmFood *food, GmMap *map, GmPlayer *player) {
   player->collected++;
   player->points += 10;
   map->matrix[food->y][food->x] = &ElVoid;
+
   do {
     food->y = rand() % (Y_MAP - 1);
     food->x = rand() % (X_MAP - 1);
   } while (map->matrix[food->y][food->x] != &ElVoid);
+
   map->matrix[food->y][food->x] = &ElFood;
 
   wattrset(map->window, ElFood.attribute);
@@ -117,8 +122,12 @@ static void printScreenInfo(const GmScreen *screen, uint8_t y, uint8_t x, const 
 
 void updateGameScreen(const User *user, const GmPlayer *player, const GmMap *map, const GmScreen *screen) { 
   wrefresh(map->window);
-  printScreenInfo(screen, 1, (getmaxx(screen->info) - 2) / 3, "Comidas Coletadas", (uint32_t) player->collected);
+
+  uint8_t sector = (getmaxx(screen->info) - 2) / 3;
+
   printScreenInfo(screen, 1, 1, "Pontuação do Jogo", player->points);
-  printScreenInfo(screen, 1, ((getmaxx(screen->info) - 2) / 3) + ((getmaxx(screen->info) - 2) / 3), "Melhor Pontuação", user->bestScore);
+  printScreenInfo(screen, 1, sector, "Comidas Coletadas", (uint32_t) player->collected);
+  printScreenInfo(screen, 1, sector * 2, "Melhor Pontuação", user->bestScore);
+
   wrefresh(screen->info);
 }
