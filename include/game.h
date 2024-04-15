@@ -43,4 +43,4 @@ void initializeMap(GmMap *map, GmScreen *screen);
 void initializeFood(GmFood *food, GmMap *map);
 void startGame(User *user);
 void updateFood(GmFood *food, GmMap *map, GmPlayer *player);
-void updateGameScreen(const GmPlayer *player, const GmMap *map, const GmScreen *screen);
+void updateGameScreen(const User *user, const GmPlayer *player, const GmMap *map, const GmScreen *screen);

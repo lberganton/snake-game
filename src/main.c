@@ -94,7 +94,7 @@ void initializeGameElements(void) {
   ElFood.graphic = ACS_DIAMOND;
 
   ElVoid.attribute = COLOR_PAIR(GmBlack);
-  ElSnakeHead.attribute = COLOR_PAIR(GmBlue);
+  ElSnakeHead.attribute = COLOR_PAIR(GmGreen);
   ElSnakeBody.attribute = COLOR_PAIR(GmWhite);
   ElFood.attribute = COLOR_PAIR(GmRed);
 }

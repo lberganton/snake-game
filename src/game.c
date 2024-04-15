@@ -62,7 +62,7 @@ void startGame(User *user) {
   nodelay(map.window, true);
 
   while (true) {
-    updateGameScreen(&player, &map, &screen);
+    updateGameScreen(user, &player, &map, &screen);
 
     input = wgetch(map.window);
     while (wgetch(map.window) != ERR);
@@ -115,10 +115,10 @@ static void printScreenInfo(const GmScreen *screen, uint8_t y, uint8_t x, const 
   wprintw(screen->info, ": %" PRIu32, info);
 }
 
-void updateGameScreen(const GmPlayer *player, const GmMap *map, const GmScreen *screen) { 
+void updateGameScreen(const User *user, const GmPlayer *player, const GmMap *map, const GmScreen *screen) { 
   wrefresh(map->window);
   printScreenInfo(screen, 1, (getmaxx(screen->info) - 2) / 3, "Comidas Coletadas", (uint32_t) player->collected);
   printScreenInfo(screen, 1, 1, "Pontuação do Jogo", player->points);
-  printScreenInfo(screen, 1, ((getmaxx(screen->info) - 2) / 3) + ((getmaxx(screen->info) - 2) / 3), "Maior Pontuação", 0);
+  printScreenInfo(screen, 1, ((getmaxx(screen->info) - 2) / 3) + ((getmaxx(screen->info) - 2) / 3), "Melhor Pontuação", user->bestScore);
   wrefresh(screen->info);
 }
