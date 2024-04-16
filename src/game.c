@@ -9,12 +9,9 @@
 #include <inttypes.h>
 #include <unistd.h>
 
-extern GmElement ElVoid;
-extern GmElement ElSnakeHead;
-extern GmElement ElSnakeBody;
-extern GmElement ElFood;
+extern Profile profile;
 
-void initializeGameScreen(GmMap *map, GmScreen *screen) {
+void initializeGameScreen(GameMap *map, GameScreen *screen) {
   screen->border = newwin(Y_MAP + 2, X_MAP + 2, (LINES - (Y_MAP + 2 + 3)) / 2, (COLS - (X_MAP + 2)) / 2);
   box(screen->border, ACS_VLINE, ACS_HLINE);
 
@@ -29,7 +26,7 @@ void initializeGameScreen(GmMap *map, GmScreen *screen) {
   wrefresh(screen->info);
 }
 
-void deleteGameScreen(GmMap *map, GmScreen *screen) {
+void deleteGameScreen(GameMap *map, GameScreen *screen) {
   wclear(map->window); 
   wclear(screen->border);
   wclear(screen->info);
@@ -43,19 +40,19 @@ void deleteGameScreen(GmMap *map, GmScreen *screen) {
   delwin(screen->info);
 }
 
-void initializeMap(GmMap *map) {
+void initializeMap(GameMap *map) {
   for (size_t i = 0; i < Y_MAP; i++) {
     for (size_t j = 0; j < X_MAP; j++) {
-      map->matrix[i][j] = &ElVoid;
+      map->matrix[i][j] = ELEMENT_VOID;
     }
   }
 }
 
-void startGame(User *user) {
-  GmPlayer player;
-  GmFood food;
-  GmMap map;
-  GmScreen screen;
+void startGame(void) {
+  GamePlayer player;
+  GameFood food;
+  GameMap map;
+  GameScreen screen;
   int input;
 
   initializeGameScreen(&map, &screen);
@@ -78,7 +75,7 @@ void startGame(User *user) {
       paintMap(&map);
     }
 
-    updateGameScreen(user, &player, &map, &screen);
+    updateGameScreen(&player, &map, &screen);
 
     if (!updatePlayer(&map, &player, &food, input)) {
       printCenterMessage(MSG_YOU_LOSE, map.window);
@@ -93,52 +90,70 @@ void startGame(User *user) {
 
   deletePlayer(&player);
 
-  user->mostRecentScore = player.points;
-  user->bestScore = player.points > user->bestScore ? player.points : user->bestScore;
+  profile.mostRecentScore = player.points;
+  profile.bestScore = player.points > profile.bestScore ? player.points : profile.bestScore;
 
   deleteGameScreen(&map, &screen);
 }
 
-void paintFood(GmFood *food, GmMap *map) {
-  wattrset(map->window, ElFood.attribute);
-  mvwaddch(map->window, food->y, food->x, ElFood.graphic);
+void paintElement(GameMap *map, GameElement element, int y, int x) {
+  int graphic, attribute;
+
+  switch (element) {
+  case ELEMENT_VOID:
+    graphic = GRAPHIC_VOID;
+    attribute = BLACK;
+    break;
+  case ELEMENT_FOOD:
+    graphic = GRAPHIC_FOOD;
+    attribute = profile.foodAttribute;
+    break;
+  case ELEMENT_SNAKE_HEAD:
+    graphic = GRAPHIC_SNAKE_HEAD;
+    attribute = profile.snakeHeadAttribute;
+    break;
+  case ELEMENT_SNAKE_BODY:
+    graphic = GRAPHIC_SNAKE_BODY;
+    attribute = profile.snakeBodyAttribute;
+  }
+  wattrset(map->window, attribute);
+  mvwaddch(map->window, y, x, graphic);
 }
 
-void paintMap(GmMap *map) {
+void paintMap(GameMap *map) {
   for (size_t i = 0; i < Y_MAP; i++) {
     for (size_t j = 0; j < X_MAP; j++) {
-      wattrset(map->window, map->matrix[i][j]->attribute);
-      mvwaddch(map->window, i, j, map->matrix[i][j]->graphic);
+      paintElement(map, map->matrix[i][j], i, j);
     }
   }
 }
 
-void createFood(GmFood *food, GmMap *map) {
+void createFood(GameFood *food, GameMap *map) {
   srand(time(NULL));
 
   do {
     food->y = rand() % (Y_MAP - 1);
     food->x = rand() % (X_MAP - 1);
-  } while (map->matrix[food->y][food->x] != &ElVoid);
+  } while (map->matrix[food->y][food->x] != ELEMENT_VOID);
 
-  map->matrix[food->y][food->x] = &ElFood;
+  map->matrix[food->y][food->x] = ELEMENT_FOOD;
 }
 
-static void printScreenInfo(GmScreen *screen, uint8_t y, uint8_t x, char *descriptor, uint32_t info) {
+static void printScreenInfo(GameScreen *screen, uint8_t y, uint8_t x, char *descriptor, uint32_t info) {
   wattrset(screen->info, A_REVERSE);
   mvwprintw(screen->info, y, x, "%s", descriptor);
   wattrset(screen->info, A_NORMAL);
   wprintw(screen->info, ": %" PRIu32, info);
 }
 
-void updateGameScreen(User *user, GmPlayer *player, GmMap *map, GmScreen *screen) { 
+void updateGameScreen(GamePlayer *player, GameMap *map, GameScreen *screen) { 
   wrefresh(map->window);
 
   uint8_t block = (getmaxx(screen->info) - 2) / 3;
 
   printScreenInfo(screen, 1, 1, "Pontuação do Jogo", player->points);
   printScreenInfo(screen, 1, block, "Comidas Coletadas", (uint32_t) player->collected);
-  printScreenInfo(screen, 1, block * 2, "Melhor Pontuação", user->bestScore);
+  printScreenInfo(screen, 1, block * 2, "Melhor Pontuação", profile.bestScore);
 
   wrefresh(screen->info);
 }

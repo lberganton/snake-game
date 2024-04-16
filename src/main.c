@@ -8,20 +8,14 @@
 #include "game.h"
 #include "config.h"
 
-GmElement ElVoid;
-GmElement ElSnakeHead;
-GmElement ElSnakeBody;
-GmElement ElFood;
+Profile profile;
 
-void initializeGameElements(void);
 void initializeCurses(void);
 void initializeColors(void);
-void mainMenu(User *user);
-void userMenu(User *user);
+void mainMenu(void);
+void userMenu(void);
 
 int main(void) {
-  User user;
-
   setlocale(LC_CTYPE, "");
 
   initializeCurses();
@@ -34,17 +28,18 @@ int main(void) {
 
   initializeColors();
 
-  if (!loadData(&user)) {
-    getUserName(&user);
-    user.bestScore = 0;
-    user.mostRecentScore = 0;
+  if (!loadData()) {
+    getUserName();
+    profile.bestScore = 0;
+    profile.mostRecentScore = 0;
+    profile.foodAttribute = COLOR_PAIR(RED);
+    profile.snakeHeadAttribute = COLOR_PAIR(GREEN);
+    profile.snakeBodyAttribute = COLOR_PAIR(WHITE);
   }
 
-  initializeGameElements();
+  mainMenu();
 
-  mainMenu(&user);
-
-  if (!saveData(&user)) {
+  if (!saveData()) {
     refresh();
     printCenterMessage("Falha no salvamento!", stdscr);
     getch();
@@ -73,26 +68,14 @@ void initializeColors(void) {
     init_color(COLOR_BLUE, 0, 1000, 1000);
   }
 
-  init_pair(GmBlack, COLOR_BLACK, COLOR_BLACK);
-  init_pair(GmWhite, COLOR_WHITE, COLOR_BLACK);
-  init_pair(GmRed, COLOR_RED, COLOR_BLACK);
-  init_pair(GmGreen, COLOR_GREEN, COLOR_BLACK);
-  init_pair(GmBlue, COLOR_BLUE, COLOR_BLACK);
+  init_pair(BLACK, COLOR_BLACK, COLOR_BLACK);
+  init_pair(WHITE, COLOR_WHITE, COLOR_BLACK);
+  init_pair(RED, COLOR_RED, COLOR_BLACK);
+  init_pair(GREEN, COLOR_GREEN, COLOR_BLACK);
+  init_pair(BLUE, COLOR_BLUE, COLOR_BLACK);
 }
 
-void initializeGameElements(void) {
-  ElVoid.graphic = ' ';
-  ElSnakeHead.graphic = ACS_BOARD;
-  ElSnakeBody.graphic = ACS_BOARD;
-  ElFood.graphic = ACS_DIAMOND;
-
-  ElVoid.attribute = COLOR_PAIR(GmBlack);
-  ElSnakeHead.attribute = COLOR_PAIR(GmGreen);
-  ElSnakeBody.attribute = COLOR_PAIR(GmWhite);
-  ElFood.attribute = COLOR_PAIR(GmRed);
-}
-
-void mainMenu(User *user) {
+void mainMenu(void) {
   int choice;
 
   while (true) {
@@ -103,10 +86,10 @@ void mainMenu(User *user) {
       if (LINES < Y_MAP + 5 || COLS < X_MAP + 2) {
         handleWithSmallTermSize(Y_MAP + 5, X_MAP + 2);
       }
-      startGame(user);
+      startGame();
       break;
     case 2:
-      userMenu(user);
+      userMenu();
       break;
     case 3:
       return;
@@ -114,10 +97,10 @@ void mainMenu(User *user) {
   }
 }
 
-void userMenu(User *user) {
+void userMenu(void) {
   char mostRecentScore[30];
   char bestScore[30];
-  snprintf(mostRecentScore, 30, "*Pontuação Recente: %" PRIu32, user->mostRecentScore);
-  snprintf(bestScore, 30, "*Melhor Pontuação:  %" PRIu32, user->bestScore);
-  interfaceString("Pontuação", 3, user->name, mostRecentScore, bestScore); 
+  snprintf(mostRecentScore, 30, "*Pontuação Recente: %" PRIu32, profile.mostRecentScore);
+  snprintf(bestScore, 30, "*Melhor Pontuação:  %" PRIu32, profile.bestScore);
+  interfaceString("Pontuação", 3, profile.name, mostRecentScore, bestScore); 
 }

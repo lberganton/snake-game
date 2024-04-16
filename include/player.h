@@ -4,31 +4,31 @@
 #include <stdbool.h>
 #include "game.h"
 
-typedef enum PlDirections {
-  PlLeft,
-  PlRight,
-  PlUp,
-  PlDown
-} PlDirections;
+typedef enum PlayerDirection {
+  DIRECTION_UP,
+  DIRECTION_DOWN,
+  DIRECTION_LEFT,
+  DIRECTION_RIGHT
+} PlayerDirection;
 
-typedef struct GmBody {
+typedef struct GameBody {
   uint16_t x, y;
-  struct GmBody *next;
-  struct GmBody *previous;
-} GmBody;
+  struct GameBody *next;
+  struct GameBody *previous;
+} GameBody;
 
-typedef struct GmPlayer {
+typedef struct GamePlayer {
   uint32_t points;
   uint16_t size;
   uint16_t collected;
   uint32_t speed;
   uint16_t x, y;
-  PlDirections direction;
-  GmBody *start, *end;
-} GmPlayer;
+  PlayerDirection direction;
+  GameBody *start, *end;
+} GamePlayer;
 
-void initializePlayer(GmPlayer *player, GmMap *map);
-bool updatePlayer(GmMap *map, GmPlayer *player, GmFood *food, int input);
-bool updateBody(GmMap *map, GmPlayer *player, uint16_t y, uint16_t x);
-bool createBody(GmMap *map, GmPlayer *player);
-void deletePlayer(GmPlayer *player);
+void initializePlayer(GamePlayer *player, GameMap *map);
+bool updatePlayer(GameMap *map, GamePlayer *player, GameFood *food, int input);
+bool updateBody(GameMap *map, GamePlayer *player, uint16_t y, uint16_t x);
+bool createBody(GameMap *map, GamePlayer *player);
+void deletePlayer(GamePlayer *player);

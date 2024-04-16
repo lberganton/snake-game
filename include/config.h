@@ -13,11 +13,27 @@
 #define GAME_MIN_DELAY 50000
 #define GAME_SPEED_INCREASE 25
 
-typedef struct User {
+#define GRAPHIC_VOID ' '
+#define GRAPHIC_FOOD ACS_DIAMOND
+#define GRAPHIC_SNAKE_HEAD ACS_BOARD
+#define GRAPHIC_SNAKE_BODY ACS_BOARD
+
+typedef enum Colors {
+  WHITE,
+  BLACK,
+  RED,
+  GREEN,
+  BLUE
+} Colors;
+
+typedef struct Profile {
   char name[NAME_LEN];
   uint32_t mostRecentScore;
   uint32_t bestScore;
-} User;
+  int foodAttribute;
+  int snakeHeadAttribute;
+  int snakeBodyAttribute;
+} Profile;
 
-bool loadData(User *user);
-bool saveData(User *user);
+bool loadData(void);
+bool saveData(void);

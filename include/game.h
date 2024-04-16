@@ -10,40 +10,34 @@
 #define Y_PLAYER (Y_MAP - 1)
 #define X_PLAYER (X_MAP / 2)
 
-typedef enum GmColors {
-  GmWhite,
-  GmBlack,
-  GmRed,
-  GmGreen,
-  GmBlue
-} GmColors;
+typedef enum GameElement {
+  ELEMENT_VOID,
+  ELEMENT_FOOD,
+  ELEMENT_SNAKE_HEAD,
+  ELEMENT_SNAKE_BODY
+} GameElement;
 
-typedef struct GmElement {
-  int graphic;
-  int attribute;
-} GmElement;
-
-typedef struct GmMap {
+typedef struct GameMap {
   WINDOW *window;
-  GmElement *matrix[Y_MAP][X_MAP];
-} GmMap;
+  GameElement matrix[Y_MAP][X_MAP];
+} GameMap;
 
-typedef struct GmFood {
+typedef struct GameFood {
   uint16_t x, y;
-} GmFood;
+} GameFood;
 
-typedef struct GmScreen {
+typedef struct GameScreen {
   WINDOW *border;
   WINDOW *info;
-} GmScreen;
+} GameScreen;
 
-typedef struct GmPlayer GmPlayer;
+typedef struct GamePlayer GamePlayer;
 
-void initializeGameScreen(GmMap *map, GmScreen *screen);
-void deleteGameScreen(GmMap *map, GmScreen *screen);
-void initializeMap(GmMap *map);
-void startGame(User *user);
-void createFood(GmFood *food, GmMap *map);
-void paintFood(GmFood *food, GmMap *map);
-void paintMap(GmMap *map);
-void updateGameScreen(User *user, GmPlayer *player, GmMap *map, GmScreen *screen);
+void startGame(void);
+void initializeGameScreen(GameMap *map, GameScreen *screen);
+void deleteGameScreen(GameMap *map, GameScreen *screen);
+void initializeMap(GameMap *map);
+void createFood(GameFood *food, GameMap *map);
+void paintElement(GameMap *map, GameElement element, int y, int x);
+void paintMap(GameMap *map);
+void updateGameScreen(GamePlayer *player, GameMap *map, GameScreen *screen);

@@ -4,6 +4,8 @@
 #include <ctype.h>
 #include "config.h"
 
+extern Profile profile;
+
 void printCenterMessage(const char *msg, WINDOW *window) {
   wattrset(window, A_REVERSE);
   mvwprintw(window, getmaxy(window) / 2, (getmaxx(window) - strlen(msg)) / 2, "%s", msg);
@@ -130,7 +132,7 @@ void interfaceString(const char *title, const int n, ...) {
   } while (input == KEY_RESIZE);
 }
 
-void getUserName(User *user) {
+void getUserName(void) {
   char buffer[NAME_LEN];
   int ch;
   int pos = 0;
@@ -155,8 +157,8 @@ void getUserName(User *user) {
     }
   }
 
-  strncpy(user->name, buffer, pos);
-  user->name[pos] = '\0';
+  strncpy(profile.name, buffer, pos);
+  profile.name[pos] = '\0';
   curs_set(false);
   clear();
 }

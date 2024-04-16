@@ -7,25 +7,23 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-extern GmElement ElVoid;
-extern GmElement ElSnakeHead;
-extern GmElement ElSnakeBody;
+extern Profile profile;
 
-void initializePlayer(GmPlayer *player, GmMap *map) {
+void initializePlayer(GamePlayer *player, GameMap *map) {
   player->size = 1;
   player->collected = 0;
   player->points = 0;
   player->speed = 0;
   player->y = Y_PLAYER;
   player->x = X_PLAYER;
-  player->direction = PlUp;
+  player->direction = DIRECTION_UP;
   player->start = NULL;
   player->end = NULL;
   
-  map->matrix[player->y][player->x] = &ElSnakeHead;
+  map->matrix[player->y][player->x] = ELEMENT_SNAKE_HEAD;
 }
 
-bool updatePlayer(GmMap *map, GmPlayer *player, GmFood *food, int input) {
+bool updatePlayer(GameMap *map, GamePlayer *player, GameFood *food, int input) {
   uint16_t oldY = player->y;
   uint16_t oldX = player->x;
 
@@ -33,52 +31,52 @@ bool updatePlayer(GmMap *map, GmPlayer *player, GmFood *food, int input) {
   case 'w':
   case 'W':
   case KEY_UP:
-    if (player->direction != PlDown) {
-      player->direction = PlUp;
+    if (player->direction != DIRECTION_DOWN) {
+      player->direction = DIRECTION_UP;
     }
     break;
   case 's':
   case 'S':
   case KEY_DOWN:
-    if (player->direction != PlUp) {
-      player->direction = PlDown;
+    if (player->direction != DIRECTION_UP) {
+      player->direction = DIRECTION_DOWN;
     }
     break;
   case 'a':
   case 'A':
   case KEY_LEFT:
-    if (player->direction != PlRight) {
-      player->direction = PlLeft;
+    if (player->direction != DIRECTION_RIGHT) {
+      player->direction = DIRECTION_LEFT;
     }
     break;
   case 'd':
   case 'D':
   case KEY_RIGHT:
-    if (player->direction != PlLeft) {
-      player->direction = PlRight;
+    if (player->direction != DIRECTION_LEFT) {
+      player->direction = DIRECTION_RIGHT;
     }
   }
 
   switch (player->direction) { 
-  case PlUp:
+  case DIRECTION_UP:
     if (player->y == 0) {
       return false;
     } 
     player->y--;
     break;
-  case PlDown:
+  case DIRECTION_DOWN:
     if (player->y == Y_MAP - 1) {
       return false;
     } 
     player->y++;
     break;
-  case PlLeft:
+  case DIRECTION_LEFT:
     if (player->x == 0) {
       return false;
     } 
     player->x--;
     break;
-  case PlRight:
+  case DIRECTION_RIGHT:
     if (player->x == X_MAP - 1) {
       return false;
     }
@@ -86,19 +84,16 @@ bool updatePlayer(GmMap *map, GmPlayer *player, GmFood *food, int input) {
     break;
   }
 
-  if (map->matrix[player->y][player->x] == &ElSnakeBody) {
-    wattrset(map->window, ElSnakeHead.attribute);
-    mvwaddch(map->window, player->y, player->x, ElSnakeHead.graphic);
+  if (map->matrix[player->y][player->x] == ELEMENT_SNAKE_BODY) {
+    paintElement(map, ELEMENT_SNAKE_HEAD, player->y, player->x);
     return false;
   }
 
-  map->matrix[oldY][oldX] = &ElVoid;
-  wattrset(map->window, ElVoid.attribute);
-  mvwaddch(map->window, oldY, oldX, ElVoid.graphic);
+  map->matrix[oldY][oldX] = ELEMENT_VOID;
+  paintElement(map, ELEMENT_VOID, oldY, oldX);
 
-  map->matrix[player->y][player->x] = &ElSnakeHead;
-  wattrset(map->window, ElSnakeHead.attribute);
-  mvwaddch(map->window, player->y, player->x, ElSnakeHead.graphic);
+  map->matrix[player->y][player->x] = ELEMENT_SNAKE_HEAD;
+  paintElement(map, ELEMENT_SNAKE_HEAD, player->y, player->x);
 
   updateBody(map, player, oldY, oldX);
 
@@ -110,29 +105,27 @@ bool updatePlayer(GmMap *map, GmPlayer *player, GmFood *food, int input) {
       player->speed++;
     }
 
-    map->matrix[food->y][food->x] = &ElVoid;
+    map->matrix[food->y][food->x] = ELEMENT_VOID;
     createFood(food, map);
-    paintFood(food, map);
+    paintElement(map, ELEMENT_FOOD, food->y, food->x);
     createBody(map, player);
   }
 
-  map->matrix[player->y][player->x] = &ElSnakeHead;
+  map->matrix[player->y][player->x] = ELEMENT_SNAKE_HEAD;
 
   return true;
 }
 
-bool updateBody(GmMap *map, GmPlayer *player, uint16_t y, uint16_t x) {
-  GmBody *body = player->start;
+bool updateBody(GameMap *map, GamePlayer *player, uint16_t y, uint16_t x) {
+  GameBody *body = player->start;
   uint16_t tempY, tempX;
 
   while (body) {
-    map->matrix[body->y][body->x] = &ElVoid;
-    wattrset(map->window, ElVoid.attribute);
-    mvwaddch(map->window, body->y, body->x, ElVoid.graphic);
+    map->matrix[body->y][body->x] = ELEMENT_VOID;
+    paintElement(map, ELEMENT_VOID, body->y, body->x);
 
-    wattrset(map->window, ElSnakeBody.attribute);
-    mvwaddch(map->window, y, x, ElSnakeBody.graphic);
-    map->matrix[y][x] = &ElSnakeBody;
+    paintElement(map, ELEMENT_SNAKE_BODY, y, x);
+    map->matrix[y][x] = ELEMENT_SNAKE_BODY;
 
     tempY = y;
     tempX = x;
@@ -147,8 +140,8 @@ bool updateBody(GmMap *map, GmPlayer *player, uint16_t y, uint16_t x) {
   return true;
 }
 
-bool createBody(GmMap *map, GmPlayer *player) {
-  GmBody *new = (GmBody*) malloc(sizeof(GmBody));
+bool createBody(GameMap *map, GamePlayer *player) {
+  GameBody *new = (GameBody*) malloc(sizeof(GameBody));
   if (!new) {
     printCenterMessage(MSG_ALLOCATION_FAILED, map->window);
     return false;
@@ -171,14 +164,14 @@ bool createBody(GmMap *map, GmPlayer *player) {
     player->end = new;
   }
 
-  map->matrix[new->y][new->x] = &ElSnakeBody;
+  map->matrix[new->y][new->x] = ELEMENT_SNAKE_BODY;
 
   return true;
 }
 
-void deletePlayer(GmPlayer *player) {
-  GmBody *body = player->start;
-  GmBody *next;
+void deletePlayer(GamePlayer *player) {
+  GameBody *body = player->start;
+  GameBody *next;
   while (body) {
     next = body->next;
     free(body);
