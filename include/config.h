@@ -18,6 +18,8 @@
 
 #define MAX_HEIGHT 25
 #define MAX_WIDTH 130
+#define MIN_HEIGHT 10
+#define MIN_WIDTH 70
 
 #define MAIN_MENU_WIDTH 30
 #define OPTIONS_MENU_WIDTH 38
@@ -27,13 +29,11 @@
 #define GRAPHIC_SNAKE_HEAD ACS_BOARD
 #define GRAPHIC_SNAKE_BODY ACS_BOARD
 
-typedef enum Colors {
-  WHITE,
-  BLACK,
-  RED,
-  GREEN,
-  BLUE
-} Colors;
+#define BLACK 0
+#define RED 1
+#define GREEN 2
+#define BLUE 3
+#define WHITE 4
 
 typedef struct Profile {
   char name[NAME_LEN];
@@ -43,9 +43,9 @@ typedef struct Profile {
   int width;
   int height;
 
-  int attributesFood;
-  int attributesSnakeHead;
-  int attributesSnakeBody;
+  int colorFood;
+  int colorSnakeHead;
+  int colorSnakeBody;
 } Profile;
 
 bool loadData(char *fileName);

@@ -28,12 +28,24 @@ void paintOptionsMenu(WINDOW *header, WINDOW *info, WINDOW *options, WINDOW *sav
   mvwprintw(info, 3, 1, "   * Melhor Pontuação: %d", profile.bestScore);
 
   mvwprintw(options, 1, 1, "Largura:");
-  mvwprintw(options, 1, OPTIONS_MENU_WIDTH - 4, "%-3d", profile.width);
+  mvwprintw(options, 1, OPTIONS_MENU_WIDTH - 5, "%3d", profile.width);
   mvwprintw(options, 2, 1, "Altura:");
-  mvwprintw(options, 2, OPTIONS_MENU_WIDTH - 4, "%-3d", profile.height);
+  mvwprintw(options, 2, OPTIONS_MENU_WIDTH - 5, "%3d", profile.height);
+
   mvwprintw(options, 3, 1, "Comida:");
+  wattrset(options, COLOR_PAIR(profile.colorFood));
+  mvwaddch(options, 3, OPTIONS_MENU_WIDTH - 4, GRAPHIC_FOOD);
+  wattrset(options, A_NORMAL);
+
   mvwprintw(options, 4, 1, "Cabeça:");
+  wattrset(options, COLOR_PAIR(profile.colorSnakeHead));
+  mvwaddch(options, 4, OPTIONS_MENU_WIDTH - 4, GRAPHIC_SNAKE_HEAD);
+  wattrset(options, A_NORMAL);
+
   mvwprintw(options, 5, 1, "Corpo:");
+  wattrset(options, COLOR_PAIR(profile.colorSnakeBody));
+  mvwaddch(options, 5, OPTIONS_MENU_WIDTH - 4, GRAPHIC_SNAKE_BODY);
+  wattrset(options, A_NORMAL);
 
   wmove(save, 1, (OPTIONS_MENU_WIDTH - strlen(saveString)) / 2);
   wprintw(save, "%s", saveString);
@@ -54,7 +66,9 @@ void paintOptionsMenu(WINDOW *header, WINDOW *info, WINDOW *options, WINDOW *sav
 
 int optionsGetInput(WINDOW *window) {
   while (true) {
-    switch (wgetch(window)) {
+    int input = wgetch(window);
+
+    switch (input) {
     case 'W':
     case 'w':
     case KEY_UP:
@@ -71,6 +85,8 @@ int optionsGetInput(WINDOW *window) {
     case 'd':
     case KEY_RIGHT:
       return KEY_RIGHT;
+    case '\n':
+      return '\n';
     case KEY_RESIZE:
       return KEY_RESIZE;
     }
@@ -80,19 +96,142 @@ int optionsGetInput(WINDOW *window) {
 static int optionsSelectedMono(WINDOW *window) {
   wmove(window, 1, 1);
   wchgat(window, OPTIONS_MENU_WIDTH - 2, A_REVERSE, 0, NULL);
+  wrefresh(window);
 
   int input = optionsGetInput(window);
   
   wmove(window, 1, 1);
   wchgat(window, OPTIONS_MENU_WIDTH - 2, A_NORMAL, 0, NULL);
+  wrefresh(window);
   
   return input;
 }
 
-void options(void) {
+static int optionsSelectedNumber(WINDOW *window, size_t y, int min, int max, int *value) {
+  int input;
+
+  do {
+    wmove(window, y, 1);
+    wchgat(window, OPTIONS_MENU_WIDTH - 6, A_REVERSE, 0, NULL);
+
+    mvwprintw(window, y, OPTIONS_MENU_WIDTH - 5, "%3d", *value);
+
+    wrefresh(window);
+
+    input = optionsGetInput(window);
+
+    if (input == KEY_LEFT || input == KEY_RIGHT) {
+      int arrow;
+      
+      if (input == KEY_LEFT) {
+        arrow = ACS_LARROW;
+        if (*value == min) {
+          *value = max;
+        }
+        else {
+          (*value)--;
+        }
+      }
+
+      if (input == KEY_RIGHT) {
+        arrow = ACS_RARROW;
+        if (*value == max) {
+          *value = min; 
+        }
+        else {
+          (*value)++;
+        }
+      }
+      
+      wmove(window, y, 1);
+      wchgat(window, OPTIONS_MENU_WIDTH - 6, A_NORMAL, 0, NULL);
+
+      mvwprintw(window, y, OPTIONS_MENU_WIDTH - 5, "%3d", *value);
+
+      wattrset(window, A_NORMAL);
+      mvwaddch(window, y, OPTIONS_MENU_WIDTH - 2, arrow);
+      wrefresh(window);
+
+      mvwaddch(window, y, OPTIONS_MENU_WIDTH - 2, ' ');
+    }
+  } while (input == KEY_LEFT || input == KEY_RIGHT);
+
+  wmove(window, y, 1);
+  wchgat(window, OPTIONS_MENU_WIDTH - 6, A_NORMAL, 0, NULL);
+  wrefresh(window);
+
+  return input;
+}
+
+static int optionsSelectedGameElement(WINDOW *window, size_t y, int graphic, int *color) {
+  int input;
+
+  do {
+    wmove(window, y, 1);
+    wchgat(window, OPTIONS_MENU_WIDTH - 6, A_REVERSE, 0, NULL);
+
+    wattrset(window, COLOR_PAIR(*color));
+    mvwaddch(window, y, OPTIONS_MENU_WIDTH - 4, graphic);
+    wattrset(window, A_NORMAL);
+
+    wrefresh(window);
+
+    input = optionsGetInput(window);
+
+    if (input == KEY_LEFT || input == KEY_RIGHT) {
+      int arrow;
+      
+      if (input == KEY_LEFT) {
+        arrow = ACS_LARROW;
+        if (*color == BLACK + 1) {
+          *color = WHITE;
+        }
+        else {
+          (*color)--;
+        }
+      }
+
+      if (input == KEY_RIGHT) {
+        arrow = ACS_RARROW;
+        if (*color == WHITE) {
+          *color = BLACK + 1; 
+        }
+        else {
+          (*color)++;
+        }
+      }
+      
+      wmove(window, y, 1);
+      wchgat(window, OPTIONS_MENU_WIDTH - 6, A_NORMAL, 0, NULL);
+
+      wattrset(window, COLOR_PAIR(*color));
+      mvwaddch(window, y, OPTIONS_MENU_WIDTH - 4, graphic);
+
+      wattrset(window, A_NORMAL);
+      mvwaddch(window, y, OPTIONS_MENU_WIDTH - 2, arrow);
+      wrefresh(window);
+
+      mvwaddch(window, y, OPTIONS_MENU_WIDTH - 2, ' ');
+    }
+  } while (input == KEY_LEFT || input == KEY_RIGHT);
+
+  wmove(window, y, 1);
+  wchgat(window, OPTIONS_MENU_WIDTH - 6, A_NORMAL, 0, NULL);
+  wrefresh(window);
+
+  return input;
+}
+
+static bool optionsLoadProfile(void) {
+  char buffer[NAME_LEN];
+  interfaceGetStringInput("Digite o perfil", buffer, NAME_LEN);
+  return loadData(buffer);
+}
+
+void optionsMenu(void) {
   int pos = 8;
   int input;
-  bool resize;
+  bool keep;
 
   do {
     if (LINES < 19 || COLS < OPTIONS_MENU_WIDTH) {
@@ -106,56 +245,109 @@ void options(void) {
     WINDOW *load = newwin(2, OPTIONS_MENU_WIDTH, getbegy(save) + 2, (COLS - OPTIONS_MENU_WIDTH) / 2);
     WINDOW *back = newwin(3, OPTIONS_MENU_WIDTH, getbegy(load) + 2, (COLS - OPTIONS_MENU_WIDTH) / 2);
 
+    keypad(options, true);
+    keypad(save, true);
+    keypad(load, true);
+    keypad(back, true);
+
     paintOptionsMenu(header, info, options, save, load, back);
 
-    resize = false;
+    keep = true;
 
-    while (pos > 0 && input != KEY_RESIZE) {
+    do {
       switch (pos) {
       case 1:
+        input = optionsSelectedNumber(options, 1, MIN_WIDTH, MAX_WIDTH, &profile.width);
+        if (input == KEY_UP) {
+          pos = 8;
+        }
+        if (input == KEY_DOWN) {
+          pos++;
+        }
+        break;
       case 2:
+        input = optionsSelectedNumber(options, 2, MIN_HEIGHT, MAX_HEIGHT, &profile.height);
+        if (input == KEY_UP) {
+          pos--;
+        }
+        if (input == KEY_DOWN) {
+          pos++;
+        }
+        break;
       case 3:
+        input = optionsSelectedGameElement(options, 3, GRAPHIC_FOOD, &profile.colorFood);
+        if (input == KEY_UP) {
+          pos--;
+        }
+        if (input == KEY_DOWN) {
+          pos++;
+        }
+        break;
       case 4:
+        input = optionsSelectedGameElement(options, 4, GRAPHIC_SNAKE_HEAD, &profile.colorSnakeHead);
+        if (input == KEY_UP) {
+          pos--;
+        }
+        if (input == KEY_DOWN) {
+          pos++;
+        }
+        break;
       case 5:
+        input = optionsSelectedGameElement(options, 5, GRAPHIC_SNAKE_BODY, &profile.colorSnakeBody);
+        if (input == KEY_UP) {
+          pos--;
+        }
+        if (input == KEY_DOWN) {
+          pos++;
+        }
+        break;
       case 6:
         input = optionsSelectedMono(save);
         if (input == KEY_UP) {
-          pos = 6;
+          pos--;
         }
         if (input == KEY_DOWN) {
-          pos = 8;
+          pos++;
         }
         if (input == '\n') {
           saveData(profile.name);
+          wclear(stdscr);
           printCenterMessage("Perfil Salvo!", stdscr);
-          
+          wgetch(stdscr);
         }
         break;
       case 7:
         input = optionsSelectedMono(load);
         if (input == KEY_UP) {
-          pos = 6;
+          pos--;
         }
         if (input == KEY_DOWN) {
-          pos = 8;
+          pos++;
         }
         if (input == '\n') {
-          //saveData(profile.name);
+          wclear(stdscr);
+          if (optionsLoadProfile()) {
+            printCenterMessage("Perfil carregado!", stdscr);
+          }
+          else {
+            printCenterMessage("Falha ao carregar perfil!", stdscr);
+          }
+          wgetch(stdscr);
         }
         break;
       case 8:
         input = optionsSelectedMono(back);
         if (input == KEY_UP) {
-          pos = 7;
+          pos--;
         }
         if (input == KEY_DOWN) {
           pos = 1;
         }
         if (input == '\n') {
-          pos = 0;
+          keep = false;
         }
       }
-    }
+    } while (input != '\n' && input != KEY_RESIZE);
 
     wclear(header);
     wclear(info);
@@ -177,5 +369,5 @@ void options(void) {
     delwin(save);
     delwin(load);
     delwin(back);
-  } while (resize);
+  } while (keep);
 }

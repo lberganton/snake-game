@@ -4,9 +4,10 @@
 #include <string.h>
 #include <stdbool.h>
 #include <inttypes.h>
-#include "interface.h"
-#include "game.h"
 #include "config.h"
+#include "interface.h"
+#include "options.h"
+#include "game.h"
 
 Profile profile;
 
@@ -36,9 +37,9 @@ int main(void) {
     profile.height = DEFAULT_HEIGHT;
     profile.width = DEFAULT_WIDTH;
 
-    profile.attributesFood = COLOR_PAIR(RED);
-    profile.attributesSnakeHead = COLOR_PAIR(GREEN);
-    profile.attributesSnakeBody = COLOR_PAIR(WHITE);
+    profile.colorFood = RED;
+    profile.colorSnakeHead = GREEN;
+    profile.colorSnakeBody = WHITE;
   }
 
   mainMenu();
@@ -93,7 +94,7 @@ void mainMenu(void) {
       startGame();
       break;
     case 2:
-      options();
+      optionsMenu();
       break;
     case 3:
       return;

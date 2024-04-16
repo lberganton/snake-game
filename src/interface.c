@@ -131,8 +131,8 @@ void interfaceString(const char *title, const int n, ...) {
 }
 
 void interfaceGetStringInput(char *msg, char *destiny, size_t lenght) {
+  size_t pos = 0;
   int ch;
-  int pos = 0;
 
   printCenterMessage(msg, stdscr);
 
@@ -147,7 +147,7 @@ void interfaceGetStringInput(char *msg, char *destiny, size_t lenght) {
       delch();
       pos--;
     }
-    else if (isalpha(ch) && pos < NAME_LEN) {
+    else if (isalpha(ch) && pos < lenght) {
       destiny[pos] = ch;
       addch(ch);
       pos++;

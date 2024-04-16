@@ -106,15 +106,15 @@ void paintElement(GameMap *map, GameElement element, int y, int x) {
     break;
   case ELEMENT_FOOD:
     graphic = GRAPHIC_FOOD;
-    attribute = profile.attributesFood;
+    attribute = COLOR_PAIR(profile.colorFood);
     break;
   case ELEMENT_SNAKE_HEAD:
     graphic = GRAPHIC_SNAKE_HEAD;
-    attribute = profile.attributesSnakeHead;
+    attribute = COLOR_PAIR(profile.colorSnakeHead);
     break;
   case ELEMENT_SNAKE_BODY:
     graphic = GRAPHIC_SNAKE_BODY;
-    attribute = profile.attributesSnakeBody;
+    attribute = COLOR_PAIR(profile.colorSnakeBody);
   }
   wattrset(map->window, attribute);
   mvwaddch(map->window, y, x, graphic);

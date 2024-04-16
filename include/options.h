@@ -2,5 +2,5 @@
 
 #include <curses.h>
 
-void optionsMenu(WINDOW *header, WINDOW *info, WINDOW *options, WINDOW *save, WINDOW *load, WINDOW *back);
-void options(void);
+void paintOptionsMenu(WINDOW *header, WINDOW *info, WINDOW *options, WINDOW *save, WINDOW *load, WINDOW *back);
+void optionsMenu(void);
