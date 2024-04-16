@@ -84,7 +84,7 @@ void mainMenu(void) {
   int choice;
 
   while (true) {
-    choice = interfaceMenu("Snake", 3, "Iniciar", "Pontuação", "Sair");
+    choice = interfaceMenu("Snake", 3, "Iniciar", "Opções", "Sair");
     
     switch (choice) {
     case 1:

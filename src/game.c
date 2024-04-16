@@ -15,7 +15,7 @@ void initializeGameScreen(GameMap *map, GameScreen *screen) {
   screen->border = newwin(profile.height + 2, profile.width + 2, (LINES - (profile.height + 2 + 3)) / 2, (COLS - (profile.width + 2)) / 2);
   box(screen->border, ACS_VLINE, ACS_HLINE);
 
-  screen->info = newwin(3, getmaxx(screen->border), getbegy(screen->border) + getmaxy(screen->border), getbegx(screen->border));
+  screen->info = newwin(3, MIN_WIDTH, getbegy(screen->border) + getmaxy(screen->border), (COLS - MIN_WIDTH) / 2);
   box(screen->info, ACS_VLINE, ACS_HLINE);
 
   map->window = newwin(profile.height, profile.width, getbegy(screen->border) + 1, getbegx(screen->border) + 1);
@@ -81,7 +81,6 @@ void startGame(void) {
       printCenterMessage(MSG_YOU_LOSE, map.window);
       wrefresh(map.window);
       sleep(2);
-      while (wgetch(map.window) != ERR);
       break;
     }
     
@@ -143,7 +142,7 @@ static void printScreenInfo(GameScreen *screen, uint8_t y, uint8_t x, char *desc
   wattrset(screen->info, A_REVERSE);
   mvwprintw(screen->info, y, x, "%s", descriptor);
   wattrset(screen->info, A_NORMAL);
-  wprintw(screen->info, ": %" PRIu32, info);
+  wprintw(screen->info, ": %-5" PRIu32 " ", info);
 }
 
 void updateGameScreen(GamePlayer *player, GameMap *map, GameScreen *screen) { 

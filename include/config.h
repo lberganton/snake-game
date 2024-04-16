@@ -19,7 +19,7 @@
 #define MAX_HEIGHT 25
 #define MAX_WIDTH 130
 #define MIN_HEIGHT 10
-#define MIN_WIDTH 70
+#define MIN_WIDTH 77
 
 #define MAIN_MENU_WIDTH 30
 #define OPTIONS_MENU_WIDTH 38
