@@ -93,7 +93,7 @@ void mainMenu(void) {
       startGame();
       break;
     case 2:
-      interfaceOptions();
+      options();
       break;
     case 3:
       return;
