@@ -13,7 +13,6 @@ Profile profile;
 void initializeCurses(void);
 void initializeColors(void);
 void mainMenu(void);
-void userMenu(void);
 
 int main(void) {
   setlocale(LC_CTYPE, "");
@@ -94,18 +93,10 @@ void mainMenu(void) {
       startGame();
       break;
     case 2:
-      userMenu();
+      interfaceOptions();
       break;
     case 3:
       return;
     }
   }
-}
-
-void userMenu(void) {
-  char mostRecentScore[30];
-  char bestScore[30];
-  snprintf(mostRecentScore, 30, "*Pontuação Recente: %" PRIu32, profile.mostRecentScore);
-  snprintf(bestScore, 30, "*Melhor Pontuação:  %" PRIu32, profile.bestScore);
-  interfaceString("Pontuação", 3, profile.name, mostRecentScore, bestScore); 
 }

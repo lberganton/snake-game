@@ -19,7 +19,8 @@
 #define MAX_HEIGHT 25
 #define MAX_WIDTH 130
 
-#define MENU_WIDTH 30
+#define MAIN_MENU_WIDTH 30
+#define OPTIONS_MENU_WIDTH 38
 
 #define GRAPHIC_VOID ' '
 #define GRAPHIC_FOOD ACS_DIAMOND
@@ -49,4 +50,3 @@ typedef struct Profile {
 
 bool loadData(void);
 bool saveData(void);
-void options(void);

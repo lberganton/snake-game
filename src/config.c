@@ -24,7 +24,3 @@ bool saveData(void) {
   fclose(file);
   return true;
 }
-
-void options(void) {
-  
-}

@@ -9,4 +9,5 @@ void printCenterMessage(const char *msg, WINDOW *window);
 void handleWithSmallTermSize(int y, int x);
 int interfaceMenu(const char *title, const size_t n, ...);
 void interfaceString(const char *title, const size_t n, ...);
+void interfaceOptions(void);
 void getUserName(void);
