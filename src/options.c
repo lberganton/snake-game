@@ -64,6 +64,12 @@ void paintOptionsMenu(WINDOW *header, WINDOW *info, WINDOW *options, WINDOW *sav
   wrefresh(back);
 }
 
+static bool optionsLoadProfile(void) {
+  char buffer[NAME_LEN];
+  interfaceGetStringInput("Digite o perfil", buffer, NAME_LEN);
+  return loadData(buffer);
+}
+
 int optionsGetInput(WINDOW *window) {
   while (true) {
     int input = wgetch(window);
@@ -222,16 +228,55 @@ static int optionsSelectedGameElement(WINDOW *window, size_t y, int graphic, int
   return input;
 }
 
-static bool optionsLoadProfile(void) {
-  char buffer[NAME_LEN];
-  interfaceGetStringInput("Digite o perfil", buffer, NAME_LEN);
-  return loadData(buffer);
+static int optionsSelection(int pos, WINDOW *options, WINDOW *save, WINDOW *load, WINDOW *back) {
+  int input;
+
+  switch (pos) {
+  case 1:
+    return optionsSelectedNumber(options, 1, MIN_WIDTH, MAX_WIDTH, &profile.width);
+  case 2:
+    return optionsSelectedNumber(options, 2, MIN_HEIGHT, MAX_HEIGHT, &profile.height);
+  case 3:
+    return optionsSelectedGameElement(options, 3, GRAPHIC_FOOD, &profile.colorFood);
+  case 4:
+    return optionsSelectedGameElement(options, 4, GRAPHIC_SNAKE_HEAD, &profile.colorSnakeHead);
+  case 5:
+    return optionsSelectedGameElement(options, 5, GRAPHIC_SNAKE_BODY, &profile.colorSnakeBody);
+  case 6:
+    input = optionsSelectedMono(save);
+    if (input == '\n') {
+      saveData(profile.name);
+      wclear(stdscr);
+      printCenterMessage("Perfil Salvo!", stdscr);
+      wgetch(stdscr);
+      return KEY_RESIZE;
+    }
+    return input;
+  case 7:
+    input = optionsSelectedMono(load);
+    if (input == '\n') {
+      wclear(stdscr);
+      if (optionsLoadProfile()) {
+        printCenterMessage("Perfil carregado!", stdscr);
+      }
+      else {
+        printCenterMessage("Falha ao carregar perfil!", stdscr);
+      }
+      wgetch(stdscr);
+      return KEY_RESIZE;
+    }
+    return input;
+  case 8:
+    input = optionsSelectedMono(back);
+    return input == '\n' ? 0 : input;
+  }
+
+  return 0;
 }
 
 void optionsMenu(void) {
   int pos = 8;
   int input;
-  bool keep;
 
   do {
     if (LINES < 19 || COLS < OPTIONS_MENU_WIDTH) {
@@ -252,102 +297,17 @@ void optionsMenu(void) {
 
     paintOptionsMenu(header, info, options, save, load, back);
 
-    keep = true;
-
     do {
-      switch (pos) {
-      case 1:
-        input = optionsSelectedNumber(options, 1, MIN_WIDTH, MAX_WIDTH, &profile.width);
-        if (input == KEY_UP) {
-          pos = 8;
-        }
-        if (input == KEY_DOWN) {
-          pos++;
-        }
+      input = optionsSelection(pos, options, save, load, back);
+      
+      switch (input) {
+      case KEY_UP:
+        pos = pos > 1 ? pos - 1 : 8;
         break;
-      case 2:
-        input = optionsSelectedNumber(options, 2, MIN_HEIGHT, MAX_HEIGHT, &profile.height);
-        if (input == KEY_UP) {
-          pos--;
-        }
-        if (input == KEY_DOWN) {
-          pos++;
-        }
-        break;
-      case 3:
-        input = optionsSelectedGameElement(options, 3, GRAPHIC_FOOD, &profile.colorFood);
-        if (input == KEY_UP) {
-          pos--;
-        }
-        if (input == KEY_DOWN) {
-          pos++;
-        }
-        break;
-      case 4:
-        input = optionsSelectedGameElement(options, 4, GRAPHIC_SNAKE_HEAD, &profile.colorSnakeHead);
-        if (input == KEY_UP) {
-          pos--;
-        }
-        if (input == KEY_DOWN) {
-          pos++;
-        }
-        break;
-      case 5:
-        input = optionsSelectedGameElement(options, 5, GRAPHIC_SNAKE_BODY, &profile.colorSnakeBody);
-        if (input == KEY_UP) {
-          pos--;
-        }
-        if (input == KEY_DOWN) {
-          pos++;
-        }
-        break;
-      case 6:
-        input = optionsSelectedMono(save);
-        if (input == KEY_UP) {
-          pos--;
-        }
-        if (input == KEY_DOWN) {
-          pos++;
-        }
-        if (input == '\n') {
-          saveData(profile.name);
-          wclear(stdscr);
-          printCenterMessage("Perfil Salvo!", stdscr);
-          wgetch(stdscr);
-        }
-        break;
-      case 7:
-        input = optionsSelectedMono(load);
-        if (input == KEY_UP) {
-          pos--;
-        }
-        if (input == KEY_DOWN) {
-          pos++;
-        }
-        if (input == '\n') {
-          wclear(stdscr);
-          if (optionsLoadProfile()) {
-            printCenterMessage("Perfil carregado!", stdscr);
-          }
-          else {
-            printCenterMessage("Falha ao carregar perfil!", stdscr);
-          }
-          wgetch(stdscr);
-        }
-        break;
-      case 8:
-        input = optionsSelectedMono(back);
-        if (input == KEY_UP) {
-          pos--;
-        }
-        if (input == KEY_DOWN) {
-          pos = 1;
-        }
-        if (input == '\n') {
-          keep = false;
-        }
+      case KEY_DOWN:
+        pos = pos < 8 ? pos + 1 : 1;
       }
-    } while (input != '\n' && input != KEY_RESIZE);
+    } while (input != 0 && input != KEY_RESIZE);
 
     wclear(header);
     wclear(info);
@@ -369,5 +329,5 @@ void optionsMenu(void) {
     delwin(save);
     delwin(load);
     delwin(back);
-  } while (keep);
+  } while (input == KEY_RESIZE);
 }
