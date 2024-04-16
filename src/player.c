@@ -14,8 +14,8 @@ void initializePlayer(GamePlayer *player, GameMap *map) {
   player->collected = 0;
   player->points = 0;
   player->speed = 0;
-  player->y = Y_PLAYER;
-  player->x = X_PLAYER;
+  player->y = profile.height - 1;
+  player->x = profile.width / 2;
   player->direction = DIRECTION_UP;
   player->start = NULL;
   player->end = NULL;
@@ -65,7 +65,7 @@ bool updatePlayer(GameMap *map, GamePlayer *player, GameFood *food, int input) {
     player->y--;
     break;
   case DIRECTION_DOWN:
-    if (player->y == Y_MAP - 1) {
+    if (player->y == profile.height - 1) {
       return false;
     } 
     player->y++;
@@ -77,7 +77,7 @@ bool updatePlayer(GameMap *map, GamePlayer *player, GameFood *food, int input) {
     player->x--;
     break;
   case DIRECTION_RIGHT:
-    if (player->x == X_MAP - 1) {
+    if (player->x == profile.width - 1) {
       return false;
     }
     player->x++;    

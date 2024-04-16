@@ -4,9 +4,6 @@
 #include <inttypes.h>
 #include "config.h"
 
-#define Y_MAP 19
-#define X_MAP 78
-
 #define Y_PLAYER (Y_MAP - 1)
 #define X_PLAYER (X_MAP / 2)
 
@@ -19,7 +16,7 @@ typedef enum GameElement {
 
 typedef struct GameMap {
   WINDOW *window;
-  GameElement matrix[Y_MAP][X_MAP];
+  GameElement matrix[MAX_HEIGHT][MAX_WIDTH];
 } GameMap;
 
 typedef struct GameFood {

@@ -1,5 +1,6 @@
 #include "config.h"
 #include <curses.h>
+#include <stdio.h>
 #include <inttypes.h>
 
 extern Profile profile;
@@ -22,4 +23,8 @@ bool saveData(void) {
   fwrite(&profile, sizeof(Profile), 1, file);
   fclose(file);
   return true;
+}
+
+void options(void) {
+  
 }

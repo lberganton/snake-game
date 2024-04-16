@@ -30,11 +30,16 @@ int main(void) {
 
   if (!loadData()) {
     getUserName();
+
     profile.bestScore = 0;
     profile.mostRecentScore = 0;
-    profile.foodAttribute = COLOR_PAIR(RED);
-    profile.snakeHeadAttribute = COLOR_PAIR(GREEN);
-    profile.snakeBodyAttribute = COLOR_PAIR(WHITE);
+
+    profile.height = DEFAULT_HEIGHT;
+    profile.width = DEFAULT_WIDTH;
+
+    profile.attributesFood = COLOR_PAIR(RED);
+    profile.attributesSnakeHead = COLOR_PAIR(GREEN);
+    profile.attributesSnakeBody = COLOR_PAIR(WHITE);
   }
 
   mainMenu();
@@ -83,8 +88,8 @@ void mainMenu(void) {
     
     switch (choice) {
     case 1:
-      if (LINES < Y_MAP + 5 || COLS < X_MAP + 2) {
-        handleWithSmallTermSize(Y_MAP + 5, X_MAP + 2);
+      if (LINES < profile.height + 5 || COLS < profile.width + 2) {
+        handleWithSmallTermSize(profile.height + 5, profile.width + 2);
       }
       startGame();
       break;

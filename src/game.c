@@ -12,13 +12,13 @@
 extern Profile profile;
 
 void initializeGameScreen(GameMap *map, GameScreen *screen) {
-  screen->border = newwin(Y_MAP + 2, X_MAP + 2, (LINES - (Y_MAP + 2 + 3)) / 2, (COLS - (X_MAP + 2)) / 2);
+  screen->border = newwin(profile.height + 2, profile.width + 2, (LINES - (profile.height + 2 + 3)) / 2, (COLS - (profile.width + 2)) / 2);
   box(screen->border, ACS_VLINE, ACS_HLINE);
 
   screen->info = newwin(3, getmaxx(screen->border), getbegy(screen->border) + getmaxy(screen->border), getbegx(screen->border));
   box(screen->info, ACS_VLINE, ACS_HLINE);
 
-  map->window = newwin(Y_MAP, X_MAP, getbegy(screen->border) + 1, getbegx(screen->border) + 1);
+  map->window = newwin(profile.height, profile.width, getbegy(screen->border) + 1, getbegx(screen->border) + 1);
   keypad(map->window, true);
   nodelay(map->window, true);
   
@@ -41,8 +41,8 @@ void deleteGameScreen(GameMap *map, GameScreen *screen) {
 }
 
 void initializeMap(GameMap *map) {
-  for (size_t i = 0; i < Y_MAP; i++) {
-    for (size_t j = 0; j < X_MAP; j++) {
+  for (int i = 0; i < profile.height; i++) {
+    for (int j = 0; j < profile.width; j++) {
       map->matrix[i][j] = ELEMENT_VOID;
     }
   }
@@ -66,8 +66,8 @@ void startGame(void) {
     while (wgetch(map.window) != ERR);
 
     if (input == KEY_RESIZE) {
-      if (LINES < Y_MAP + 5 || COLS < X_MAP + 2) {
-        handleWithSmallTermSize(Y_MAP + 5, X_MAP + 2);
+      if (LINES < profile.height + 5 || COLS < profile.width + 2) {
+        handleWithSmallTermSize(profile.height + 5, profile.width + 2);
       }
       
       deleteGameScreen(&map, &screen);
@@ -106,23 +106,23 @@ void paintElement(GameMap *map, GameElement element, int y, int x) {
     break;
   case ELEMENT_FOOD:
     graphic = GRAPHIC_FOOD;
-    attribute = profile.foodAttribute;
+    attribute = profile.attributesFood;
     break;
   case ELEMENT_SNAKE_HEAD:
     graphic = GRAPHIC_SNAKE_HEAD;
-    attribute = profile.snakeHeadAttribute;
+    attribute = profile.attributesSnakeHead;
     break;
   case ELEMENT_SNAKE_BODY:
     graphic = GRAPHIC_SNAKE_BODY;
-    attribute = profile.snakeBodyAttribute;
+    attribute = profile.attributesSnakeBody;
   }
   wattrset(map->window, attribute);
   mvwaddch(map->window, y, x, graphic);
 }
 
 void paintMap(GameMap *map) {
-  for (size_t i = 0; i < Y_MAP; i++) {
-    for (size_t j = 0; j < X_MAP; j++) {
+  for (int i = 0; i < profile.height; i++) {
+    for (int j = 0; j < profile.width; j++) {
       paintElement(map, map->matrix[i][j], i, j);
     }
   }
@@ -132,8 +132,8 @@ void createFood(GameFood *food, GameMap *map) {
   srand(time(NULL));
 
   do {
-    food->y = rand() % (Y_MAP - 1);
-    food->x = rand() % (X_MAP - 1);
+    food->y = rand() % (profile.height - 1);
+    food->x = rand() % (profile.width - 1);
   } while (map->matrix[food->y][food->x] != ELEMENT_VOID);
 
   map->matrix[food->y][food->x] = ELEMENT_FOOD;
