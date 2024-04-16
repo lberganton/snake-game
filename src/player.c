@@ -80,8 +80,7 @@ bool updatePlayer(GameMap *map, GamePlayer *player, GameFood *food, int input) {
     if (player->x == profile.width - 1) {
       return false;
     }
-    player->x++;    
-    break;
+    player->x++;
   }
 
   if (map->matrix[player->y][player->x] == ELEMENT_SNAKE_BODY) {

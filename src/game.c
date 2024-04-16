@@ -101,7 +101,7 @@ void paintElement(GameMap *map, GameElement element, int y, int x) {
   switch (element) {
   case ELEMENT_VOID:
     graphic = GRAPHIC_VOID;
-    attribute = BLACK;
+    attribute = COLOR_PAIR(BLACK);
     break;
   case ELEMENT_FOOD:
     graphic = GRAPHIC_FOOD;
@@ -115,8 +115,7 @@ void paintElement(GameMap *map, GameElement element, int y, int x) {
     graphic = GRAPHIC_SNAKE_BODY;
     attribute = COLOR_PAIR(profile.colorSnakeBody);
   }
-  wattrset(map->window, attribute);
-  mvwaddch(map->window, y, x, graphic);
+  mvwaddch(map->window, y, x, graphic | attribute);
 }
 
 void paintMap(GameMap *map) {
