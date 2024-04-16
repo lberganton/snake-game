@@ -10,4 +10,4 @@ void handleWithSmallTermSize(int y, int x);
 int interfaceMenu(const char *title, const size_t n, ...);
 void interfaceString(const char *title, const size_t n, ...);
 void interfaceOptions(void);
-void getUserName(void);
+void interfaceGetStringInput(char *msg, char *destiny, size_t lenght);

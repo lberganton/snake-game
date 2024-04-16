@@ -3,7 +3,7 @@
 #include <curses.h>
 #include <inttypes.h>
 
-#define FILE_DATA "data"
+#define DEFAULT_DATA_FILE_NAME "data"
 #define NAME_LEN 15
 
 #define MSG_YOU_LOSE            "VOCÊ PERDEU!"
@@ -48,5 +48,5 @@ typedef struct Profile {
   int attributesSnakeBody;
 } Profile;
 
-bool loadData(void);
-bool saveData(void);
+bool loadData(char *fileName);
+bool saveData(char *fileName);

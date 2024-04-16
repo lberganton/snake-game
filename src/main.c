@@ -27,8 +27,8 @@ int main(void) {
 
   initializeColors();
 
-  if (!loadData()) {
-    getUserName();
+  if (!loadData(DEFAULT_DATA_FILE_NAME)) {
+    interfaceGetStringInput("Digite seu nome", profile.name, NAME_LEN);
 
     profile.bestScore = 0;
     profile.mostRecentScore = 0;
@@ -43,7 +43,7 @@ int main(void) {
 
   mainMenu();
 
-  if (!saveData()) {
+  if (!saveData(DEFAULT_DATA_FILE_NAME)) {
     refresh();
     printCenterMessage("Falha no salvamento!", stdscr);
     getch();

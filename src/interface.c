@@ -2,6 +2,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdbool.h>
 #include "config.h"
 
 extern Profile profile;
@@ -130,12 +131,11 @@ void interfaceString(const char *title, const int n, ...) {
   } while (input == KEY_RESIZE);
 }
 
-void getUserName(void) {
-  char buffer[NAME_LEN];
+void interfaceGetStringInput(char *msg, char *destiny, size_t lenght) {
   int ch;
   int pos = 0;
 
-  printCenterMessage("Digite seu nome", stdscr);
+  printCenterMessage(msg, stdscr);
 
   attrset(A_NORMAL);
   move(LINES / 2 + 1, COLS / 2 - 8);
@@ -149,14 +149,13 @@ void getUserName(void) {
       pos--;
     }
     else if (isalpha(ch) && pos < NAME_LEN) {
-      buffer[pos] = ch;
+      destiny[pos] = ch;
       addch(ch);
       pos++;
     }
   }
 
-  strncpy(profile.name, buffer, pos);
-  profile.name[pos] = '\0';
+  destiny[pos] = '\0';
   curs_set(false);
   clear();
 }
@@ -206,8 +205,47 @@ static void paintOptionsMenu(WINDOW *header, WINDOW *info, WINDOW *options, WIND
   wrefresh(back);
 }
 
+int interfaceOptionsGetInput(WINDOW *window) {
+  while (true) {
+    switch (wgetch(window)) {
+    case 'W':
+    case 'w':
+    case KEY_UP:
+      return KEY_UP;
+    case 'S':
+    case 's':
+    case KEY_DOWN:
+      return KEY_DOWN;
+    case 'A':
+    case 'a':
+    case KEY_LEFT:
+      return KEY_LEFT;
+    case 'D':
+    case 'd':
+    case KEY_RIGHT:
+      return KEY_RIGHT;
+    case KEY_RESIZE:
+      return KEY_RESIZE;
+    }
+  }
+}
+
+static int interfaceOptionsSelectedBack(WINDOW *back) {
+  wmove(back, 1, 1);
+  wchgat(back, OPTIONS_MENU_WIDTH - 2, A_REVERSE, 0, NULL);
+
+  int input = interfaceOptionsGetInput(back);
+  
+  wmove(back, 1, 1);
+  wchgat(back, OPTIONS_MENU_WIDTH - 2, A_NORMAL, 0, NULL);
+  
+  return input;
+}
+
 void interfaceOptions(void) {
+  int pos = 8;
   int input;
+  bool resize;
 
   do {
     if (LINES < 19 || COLS < OPTIONS_MENU_WIDTH) {
@@ -223,36 +261,48 @@ void interfaceOptions(void) {
 
     paintOptionsMenu(header, info, options, save, load, back);
 
-    int pos = 8;
+    resize = false;
 
-    wgetch(options);
-    pos = 2;
-    if (pos >= 1 && pos <= 5) {
-      wmove(options, pos, OPTIONS_MENU_WIDTH - 6);
-      wchgat(options, 5, A_REVERSE, 0, NULL);
-      //wchgat(back, OPTIONS_MENU_WIDTH - 2, A_REVERSE, 0, NULL);
-    }
-
-    wmove(back, 1, 1);
-    wchgat(back, OPTIONS_MENU_WIDTH - 2, A_REVERSE, 0, NULL);
-
-    while ((input = wgetch(options)) != '\n' && input != KEY_RESIZE) {
-      if (pos >= 1 && pos <= 5) {
-        wmove(options, pos, OPTIONS_MENU_WIDTH - 7);
-        wchgat(options, 6, A_REVERSE, 0, NULL);
-        //wchgat(back, OPTIONS_MENU_WIDTH - 2, A_REVERSE, 0, NULL);
-      }
-      switch (input) {
-      case 'w':
-      case 'W':
-      case KEY_UP:
-        
+    while (pos > 0 && input != KEY_RESIZE) {
+      switch (pos) {
+      case 1:
+      case 2:
+      case 3:
+      case 4:
+      case 5:
+      case 6:
+      case 7:
+        input = interfaceOptionsSelectedBack(back);
+        if (input == KEY_UP) {
+          pos = 6;
+        }
+        if (input == KEY_DOWN) {
+          pos = 8;
+        }
+        if (input == '\n') {
+          saveData(profile.name);
+        }
         break;
-      case 's':
-      case 'S':
-      case KEY_DOWN:
+      case 8:
+        input = interfaceOptionsSelectedBack(back);
+        if (input == KEY_UP) {
+          pos = 7;
+        }
+        if (input == KEY_DOWN) {
+          pos = 1;
+        }
+        if (input == '\n') {
+          pos = 0;
+        }
       }
     }
+
+    wclear(header);
+    wclear(info);
+    wclear(options);
+    wclear(save);
+    wclear(load);
+    wclear(back);
     
     wrefresh(header);
     wrefresh(info);
@@ -260,36 +310,12 @@ void interfaceOptions(void) {
     wrefresh(save);
     wrefresh(load);
     wrefresh(back);
-    wgetch(header);
 
-    /*
-    while ((input = wgetch(options)) != '\n' && input != KEY_RESIZE) {
-      switch (input) {
-      case 'w':
-      case 'W':
-      case KEY_UP:
-        wchgat(options, MAIN_MENU_WIDTH - 2, A_NORMAL, 0, NULL);
-        pos = (pos == 1) ? (int) n : pos - 1;
-        wmove(options, pos, 1);
-        wchgat(options, MAIN_MENU_WIDTH - 2, A_REVERSE, 0, NULL);
-        break;
-      case 's':
-      case 'S':
-      case KEY_DOWN:
-        wchgat(options, MAIN_MENU_WIDTH - 2, A_NORMAL, 0, NULL);
-        pos = (pos == (int) n) ? 1 : pos + 1;
-        wmove(options, pos, 1);
-        wchgat(options, MAIN_MENU_WIDTH - 2, A_REVERSE, 0, NULL);
-      }
-    }
-
-    wclear(header);
-    wrefresh(header);
     delwin(header);
-    wclear(options);
-    wrefresh(options);
+    delwin(info);
     delwin(options);
-
-    va_end(args);*/
-  } while (input == KEY_RESIZE);
+    delwin(save);
+    delwin(load);
+    delwin(back);
+  } while (resize);
 }

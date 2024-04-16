@@ -5,8 +5,8 @@
 
 extern Profile profile;
 
-bool loadData(void) {
-  FILE *file = fopen("data", "rb");
+bool loadData(char *fileName) {
+  FILE *file = fopen(fileName, "rb");
   if (!file) {
     return false;
   }
@@ -15,8 +15,8 @@ bool loadData(void) {
   return true;
 }
 
-bool saveData(void) {
-  FILE *file = fopen("data", "wb");
+bool saveData(char *fileName) {
+  FILE *file = fopen(fileName, "wb");
   if (!file) {
     return false;
   }
