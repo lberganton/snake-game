@@ -14,7 +14,6 @@ typedef enum PlayerDirection {
 typedef struct GameBody {
   uint16_t x, y;
   struct GameBody *next;
-  struct GameBody *previous;
 } GameBody;
 
 typedef struct GamePlayer {
@@ -29,6 +28,6 @@ typedef struct GamePlayer {
 
 void initializePlayer(GamePlayer *player, GameMap *map);
 bool updatePlayer(GameMap *map, GamePlayer *player, GameFood *food, int input);
-bool updateBody(GameMap *map, GamePlayer *player, uint16_t y, uint16_t x);
+void updateBody(GameMap *map, GamePlayer *player, uint16_t y, uint16_t x);
 bool createBody(GameMap *map, GamePlayer *player);
 void deletePlayer(GamePlayer *player);

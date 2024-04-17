@@ -115,7 +115,7 @@ bool updatePlayer(GameMap *map, GamePlayer *player, GameFood *food, int input) {
   return true;
 }
 
-bool updateBody(GameMap *map, GamePlayer *player, uint16_t y, uint16_t x) {
+void updateBody(GameMap *map, GamePlayer *player, uint16_t y, uint16_t x) {
   GameBody *body = player->start;
   uint16_t tempY, tempX;
 
@@ -135,8 +135,6 @@ bool updateBody(GameMap *map, GamePlayer *player, uint16_t y, uint16_t x) {
 
     body = body->next;
   }
-
-  return true;
 }
 
 bool createBody(GameMap *map, GamePlayer *player) {
@@ -150,18 +148,15 @@ bool createBody(GameMap *map, GamePlayer *player) {
 
   if (!player->end) {
     player->start = new;
-    player->end = new;
-    new->previous = NULL;
     new->y = player->y;
     new->x = player->x;
   }
   else {
     new->y = player->end->y;
     new->x = player->end->x;
-    new->previous = player->end;
     player->end->next = new;
-    player->end = new;
   }
+  player->end = new;
 
   map->matrix[new->y][new->x] = ELEMENT_SNAKE_BODY;
 
