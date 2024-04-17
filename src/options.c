@@ -122,43 +122,24 @@ static int optionsSelectedNumber(WINDOW *window, size_t y, int min, int max, int
 
     mvwprintw(window, y, OPTIONS_MENU_WIDTH - 5, "%3d", *value);
 
-    wrefresh(window);
-
     input = optionsGetInput(window);
 
-    if (input == KEY_LEFT || input == KEY_RIGHT) {
-      int arrow;
-      
-      if (input == KEY_LEFT) {
-        arrow = ACS_LARROW;
-        if (*value == min) {
-          *value = max;
-        }
-        else {
-          (*value)--;
-        }
+    if (input == KEY_LEFT) {
+      if (*value == min) {
+        *value = max;
       }
-
-      if (input == KEY_RIGHT) {
-        arrow = ACS_RARROW;
-        if (*value == max) {
-          *value = min; 
-        }
-        else {
-          (*value)++;
-        }
+      else {
+        (*value)--;
       }
-      
-      wmove(window, y, 1);
-      wchgat(window, OPTIONS_MENU_WIDTH - 6, A_NORMAL, 0, NULL);
+    }
 
-      mvwprintw(window, y, OPTIONS_MENU_WIDTH - 5, "%3d", *value);
-
-      wattrset(window, A_NORMAL);
-      mvwaddch(window, y, OPTIONS_MENU_WIDTH - 2, arrow);
-      wrefresh(window);
-
-      mvwaddch(window, y, OPTIONS_MENU_WIDTH - 2, ' ');
+    if (input == KEY_RIGHT) {
+      if (*value == max) {
+        *value = min; 
+      }
+      else {
+        (*value)++;
+      }
     }
   } while (input == KEY_LEFT || input == KEY_RIGHT);
 
@@ -176,48 +157,27 @@ static int optionsSelectedGameElement(WINDOW *window, size_t y, int graphic, int
     wmove(window, y, 1);
     wchgat(window, OPTIONS_MENU_WIDTH - 6, A_REVERSE, 0, NULL);
 
-    wattrset(window, COLOR_PAIR(*color));
-    mvwaddch(window, y, OPTIONS_MENU_WIDTH - 4, graphic);
-    wattrset(window, A_NORMAL);
-
-    wrefresh(window);
+    mvwaddch(window, y, OPTIONS_MENU_WIDTH - 4, graphic | COLOR_PAIR(*color));
 
     input = optionsGetInput(window);
 
-    if (input == KEY_LEFT || input == KEY_RIGHT) {
-      int arrow;
       
-      if (input == KEY_LEFT) {
-        arrow = ACS_LARROW;
-        if (*color == BLACK + 1) {
-          *color = WHITE;
-        }
-        else {
-          (*color)--;
-        }
+    if (input == KEY_LEFT) {
+      if (*color == BLACK + 1) {
+        *color = WHITE;
       }
-
-      if (input == KEY_RIGHT) {
-        arrow = ACS_RARROW;
-        if (*color == WHITE) {
-          *color = BLACK + 1; 
-        }
-        else {
-          (*color)++;
-        }
+      else {
+        (*color)--;
       }
-      
-      wmove(window, y, 1);
-      wchgat(window, OPTIONS_MENU_WIDTH - 6, A_NORMAL, 0, NULL);
+    }
 
-      wattrset(window, COLOR_PAIR(*color));
-      mvwaddch(window, y, OPTIONS_MENU_WIDTH - 4, graphic);
-
-      wattrset(window, A_NORMAL);
-      mvwaddch(window, y, OPTIONS_MENU_WIDTH - 2, arrow);
-      wrefresh(window);
-
-      mvwaddch(window, y, OPTIONS_MENU_WIDTH - 2, ' ');
+    if (input == KEY_RIGHT) {
+      if (*color == WHITE) {
+        *color = BLACK + 1; 
+      }
+      else {
+        (*color)++;
+      }
     }
   } while (input == KEY_LEFT || input == KEY_RIGHT);
 
