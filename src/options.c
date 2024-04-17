@@ -1,13 +1,12 @@
-#include "options.h"
-#include "config.h"
 #include "interface.h"
+#include "config.h"
 #include <curses.h>
 #include <stdbool.h>
 #include <string.h>
 
 extern Profile profile;
 
-void paintOptionsMenu(WINDOW *header, WINDOW *info, WINDOW *options, WINDOW *save, WINDOW *load, WINDOW *back) {
+static void paintOptionsMenu(WINDOW *header, WINDOW *info, WINDOW *options, WINDOW *save, WINDOW *load, WINDOW *back) {
   char *title = "Opções";
   char *saveString = "Salvar Perfil";
   char *loadString = "Carregar Perfil";

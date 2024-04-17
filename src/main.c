@@ -6,7 +6,6 @@
 #include <inttypes.h>
 #include "config.h"
 #include "interface.h"
-#include "options.h"
 #include "game.h"
 
 Profile profile;
