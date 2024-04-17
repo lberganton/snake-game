@@ -143,7 +143,7 @@ bool createBody(GameMap *map, GamePlayer *player) {
 
   new->next = NULL;
 
-  if (!player->end) {
+  if (!player->start) {
     player->start = new;
     new->y = player->y;
     new->x = player->x;

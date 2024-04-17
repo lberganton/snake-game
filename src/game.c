@@ -63,7 +63,7 @@ void startGame(void) {
 
   while (true) {
     input = wgetch(map.window);
-    while (wgetch(map.window) != ERR);
+    clearInputBuffer(map.window);
 
     if (input == KEY_RESIZE) {
       if (LINES < profile.height + 5 || COLS < profile.width + 2) {
@@ -81,6 +81,7 @@ void startGame(void) {
       printCenterMessage(MSG_YOU_LOSE, map.window);
       wrefresh(map.window);
       sleep(2);
+      clearInputBuffer(map.window);
       break;
     }
     
