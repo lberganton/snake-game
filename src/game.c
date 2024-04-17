@@ -1,40 +1,46 @@
 #include "game.h"
-#include "player.h"
 #include "config.h"
 #include "interface.h"
+#include "player.h"
 #include <curses.h>
+#include <inttypes.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <inttypes.h>
 #include <unistd.h>
 
 extern Profile profile;
 
 void initializeGameScreen(GameMap *map, GameScreen *screen) {
-  screen->border = newwin(profile.height + 2, profile.width + 2, (LINES - (profile.height + 2 + 3)) / 2, (COLS - (profile.width + 2)) / 2);
+  screen->border = newwin(profile.height + 2, profile.width + 2,
+                          (LINES - (profile.height + 2 + 3)) / 2,
+                          (COLS - (profile.width + 2)) / 2);
   box(screen->border, ACS_VLINE, ACS_HLINE);
 
-  screen->info = newwin(3, MIN_WIDTH, getbegy(screen->border) + getmaxy(screen->border), (COLS - MIN_WIDTH) / 2);
+  screen->info =
+      newwin(3, MIN_WIDTH, getbegy(screen->border) + getmaxy(screen->border),
+             (COLS - MIN_WIDTH) / 2);
   box(screen->info, ACS_VLINE, ACS_HLINE);
 
-  map->window = newwin(profile.height, profile.width, getbegy(screen->border) + 1, getbegx(screen->border) + 1);
+  map->window =
+      newwin(profile.height, profile.width, getbegy(screen->border) + 1,
+             getbegx(screen->border) + 1);
   keypad(map->window, true);
   nodelay(map->window, true);
-  
+
   wrefresh(screen->border);
   wrefresh(screen->info);
 }
 
 void deleteGameScreen(GameMap *map, GameScreen *screen) {
-  wclear(map->window); 
+  wclear(map->window);
   wclear(screen->border);
   wclear(screen->info);
 
   wrefresh(map->window);
   wrefresh(screen->border);
   wrefresh(screen->info);
-  
+
   delwin(map->window);
   delwin(screen->border);
   delwin(screen->info);
@@ -53,7 +59,6 @@ void startGame(void) {
   GameFood food;
   GameMap map;
   GameScreen screen;
-  int input;
 
   initializeGameScreen(&map, &screen);
   initializeMap(&map);
@@ -61,15 +66,17 @@ void startGame(void) {
   createFood(&food, &map);
   paintMap(&map);
 
+  double increase = (GAME_MAX_DELAY - GAME_MIN_DELAY) / GAME_SPEED_INCREASE;
+
   while (true) {
-    input = wgetch(map.window);
+    int input = wgetch(map.window);
     clearInputBuffer(map.window);
 
     if (input == KEY_RESIZE) {
       if (LINES < profile.height + 5 || COLS < profile.width + 2) {
         handleWithSmallTermSize(profile.height + 5, profile.width + 2);
       }
-      
+
       deleteGameScreen(&map, &screen);
       initializeGameScreen(&map, &screen);
       paintMap(&map);
@@ -78,22 +85,24 @@ void startGame(void) {
     updateGameScreen(&player, &map, &screen);
 
     if (!updatePlayer(&map, &player, &food, input)) {
-      printCenterMessage(MSG_YOU_LOSE, map.window);
+      printCenterMessage("VOCÊ PERDEU!", map.window);
       wrefresh(map.window);
       sleep(2);
       clearInputBuffer(map.window);
       break;
     }
-    
-    usleep((double) GAME_MAX_DELAY - player.speed * ((GAME_MAX_DELAY - GAME_MIN_DELAY) / GAME_SPEED_INCREASE));
+
+    usleep(GAME_MAX_DELAY - player.speed * increase);
   }
 
+  deleteGameScreen(&map, &screen);
   deletePlayer(&player);
 
   profile.mostRecentScore = player.points;
-  profile.bestScore = player.points > profile.bestScore ? player.points : profile.bestScore;
+  profile.bestScore =
+      player.points > profile.bestScore ? player.points : profile.bestScore;
 
-  deleteGameScreen(&map, &screen);
+  saveData(DEFAULT_DATA_FILE_NAME);
 }
 
 void paintElement(GameMap *map, GameElement element, int y, int x) {
@@ -116,6 +125,7 @@ void paintElement(GameMap *map, GameElement element, int y, int x) {
     graphic = GRAPHIC_SNAKE_BODY;
     attribute = COLOR_PAIR(profile.colorSnakeBody);
   }
+
   mvwaddch(map->window, y, x, graphic | attribute);
 }
 
@@ -138,21 +148,22 @@ void createFood(GameFood *food, GameMap *map) {
   map->matrix[food->y][food->x] = ELEMENT_FOOD;
 }
 
-static void printScreenInfo(GameScreen *screen, uint8_t y, uint8_t x, char *descriptor, uint32_t info) {
+static void printScreenInfo(GameScreen *screen, uint8_t x, char *descriptor,
+                            uint32_t info) {
   wattrset(screen->info, A_REVERSE);
-  mvwprintw(screen->info, y, x, "%s", descriptor);
+  mvwprintw(screen->info, 1, x, "%s", descriptor);
   wattrset(screen->info, A_NORMAL);
   wprintw(screen->info, ": %-5" PRIu32 " ", info);
 }
 
-void updateGameScreen(GamePlayer *player, GameMap *map, GameScreen *screen) { 
+void updateGameScreen(GamePlayer *player, GameMap *map, GameScreen *screen) {
   wrefresh(map->window);
 
   uint8_t block = (getmaxx(screen->info) - 2) / 3;
 
-  printScreenInfo(screen, 1, 1, "Pontuação do Jogo", player->points);
-  printScreenInfo(screen, 1, block, "Comidas Coletadas", (uint32_t) player->collected);
-  printScreenInfo(screen, 1, block * 2, "Melhor Pontuação", profile.bestScore);
+  printScreenInfo(screen, 1, "Pontuação do Jogo", player->points);
+  printScreenInfo(screen, block, "Comidas Coletadas", player->collected);
+  printScreenInfo(screen, block * 2, "Melhor Pontuação", profile.bestScore);
 
   wrefresh(screen->info);
 }

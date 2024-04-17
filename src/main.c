@@ -1,12 +1,12 @@
-#include <curses.h>
-#include <stdio.h>
-#include <locale.h>
-#include <string.h>
-#include <stdbool.h>
-#include <inttypes.h>
 #include "config.h"
-#include "interface.h"
 #include "game.h"
+#include "interface.h"
+#include <curses.h>
+#include <inttypes.h>
+#include <locale.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
 
 Profile profile;
 
@@ -49,7 +49,7 @@ void initializeCurses(void) {
   noecho();
   cbreak();
   keypad(stdscr, true);
-  curs_set(false); 
+  curs_set(false);
 }
 
 void initializeColors(void) {
@@ -78,7 +78,7 @@ void mainMenu(void) {
 
   while (true) {
     choice = interfaceMenu("Snake", 3, "Iniciar", "Opções", "Sair");
-    
+
     switch (choice) {
     case 1:
       if (LINES < profile.height + 5 || COLS < profile.width + 2) {

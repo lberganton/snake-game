@@ -1,11 +1,11 @@
 #include "player.h"
-#include "game.h"
 #include "config.h"
+#include "game.h"
 #include "interface.h"
 #include <curses.h>
-#include <stdlib.h>
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <stdlib.h>
 
 extern Profile profile;
 
@@ -19,7 +19,7 @@ void initializePlayer(GamePlayer *player, GameMap *map) {
   player->direction = DIRECTION_UP;
   player->start = NULL;
   player->end = NULL;
-  
+
   map->matrix[player->y][player->x] = ELEMENT_SNAKE_HEAD;
 }
 
@@ -57,23 +57,23 @@ bool updatePlayer(GameMap *map, GamePlayer *player, GameFood *food, int input) {
     }
   }
 
-  switch (player->direction) { 
+  switch (player->direction) {
   case DIRECTION_UP:
     if (player->y == 0) {
       return false;
-    } 
+    }
     player->y--;
     break;
   case DIRECTION_DOWN:
     if (player->y == profile.height - 1) {
       return false;
-    } 
+    }
     player->y++;
     break;
   case DIRECTION_LEFT:
     if (player->x == 0) {
       return false;
-    } 
+    }
     player->x--;
     break;
   case DIRECTION_RIGHT:
@@ -135,7 +135,7 @@ void updateBody(GameMap *map, GameBody *body, uint16_t gotoY, uint16_t gotoX) {
 }
 
 bool createBody(GameMap *map, GamePlayer *player) {
-  GameBody *new = (GameBody*) malloc(sizeof(GameBody));
+  GameBody *new = (GameBody *)malloc(sizeof(GameBody));
   if (!new) {
     printCenterMessage(MSG_ALLOCATION_FAILED, map->window);
     return false;
@@ -147,8 +147,7 @@ bool createBody(GameMap *map, GamePlayer *player) {
     player->start = new;
     new->y = player->y;
     new->x = player->x;
-  }
-  else {
+  } else {
     new->y = player->end->y;
     new->x = player->end->x;
     player->end->next = new;

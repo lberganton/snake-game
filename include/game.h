@@ -1,8 +1,8 @@
 #pragma once
 
+#include "config.h"
 #include <curses.h>
 #include <inttypes.h>
-#include "config.h"
 
 #define Y_PLAYER (Y_MAP - 1)
 #define X_PLAYER (X_MAP / 2)

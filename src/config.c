@@ -24,5 +24,6 @@ bool saveData(char *fileName) {
 }
 
 void clearInputBuffer(WINDOW *window) {
-  while (wgetch(window) != ERR);
+  while (wgetch(window) != ERR)
+    ;
 }

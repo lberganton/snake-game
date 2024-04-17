@@ -1,8 +1,8 @@
 #pragma once
 
+#include "game.h"
 #include <curses.h>
 #include <stdbool.h>
-#include "game.h"
 
 typedef enum PlayerDirection {
   DIRECTION_UP,
