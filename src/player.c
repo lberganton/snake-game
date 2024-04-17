@@ -94,7 +94,7 @@ bool updatePlayer(GameMap *map, GamePlayer *player, GameFood *food, int input) {
   map->matrix[player->y][player->x] = ELEMENT_SNAKE_HEAD;
   paintElement(map, ELEMENT_SNAKE_HEAD, player->y, player->x);
 
-  updateBody(map, player, oldY, oldX);
+  updateBody(map, player->start, oldY, oldX);
 
   if (player->y == food->y && player->x == food->x) {
     player->collected++;
@@ -115,25 +115,22 @@ bool updatePlayer(GameMap *map, GamePlayer *player, GameFood *food, int input) {
   return true;
 }
 
-void updateBody(GameMap *map, GamePlayer *player, uint16_t y, uint16_t x) {
-  GameBody *body = player->start;
-  uint16_t tempY, tempX;
-
-  while (body) {
+void updateBody(GameMap *map, GameBody *body, uint16_t gotoY, uint16_t gotoX) {
+  if (body) {
     map->matrix[body->y][body->x] = ELEMENT_VOID;
     paintElement(map, ELEMENT_VOID, body->y, body->x);
 
-    paintElement(map, ELEMENT_SNAKE_BODY, y, x);
-    map->matrix[y][x] = ELEMENT_SNAKE_BODY;
+    paintElement(map, ELEMENT_SNAKE_BODY, gotoY, gotoX);
+    map->matrix[gotoY][gotoX] = ELEMENT_SNAKE_BODY;
 
-    tempY = y;
-    tempX = x;
-    y = body->y;
-    x = body->x;
-    body->y = tempY;
-    body->x = tempX;
+    uint16_t swapY = body->y;
+    uint16_t swapX = body->x;
+    body->y = gotoY;
+    body->x = gotoX;
+    gotoY = swapY;
+    gotoX = swapX;
 
-    body = body->next;
+    updateBody(map, body->next, gotoY, gotoX);
   }
 }
 

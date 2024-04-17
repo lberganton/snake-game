@@ -28,6 +28,6 @@ typedef struct GamePlayer {
 
 void initializePlayer(GamePlayer *player, GameMap *map);
 bool updatePlayer(GameMap *map, GamePlayer *player, GameFood *food, int input);
-void updateBody(GameMap *map, GamePlayer *player, uint16_t y, uint16_t x);
 bool createBody(GameMap *map, GamePlayer *player);
+void updateBody(GameMap *map, GameBody *player, uint16_t y, uint16_t x);
 void deletePlayer(GamePlayer *player);
