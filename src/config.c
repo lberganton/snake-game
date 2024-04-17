@@ -1,7 +1,5 @@
 #include "config.h"
-#include <curses.h>
 #include <stdio.h>
-#include <inttypes.h>
 
 extern Profile profile;
 

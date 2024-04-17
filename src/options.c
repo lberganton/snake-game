@@ -6,8 +6,9 @@
 
 extern Profile profile;
 
-static void paintOptionsMenu(WINDOW *header, WINDOW *info, WINDOW *options, WINDOW *save, WINDOW *load, WINDOW *back) {
+static void paintOptionsMenu(WINDOW *header, WINDOW *info, WINDOW *options, WINDOW *create, WINDOW *save, WINDOW *load, WINDOW *back) {
   char *title = "Opções";
+  char *createString = "Criar perfil";
   char *saveString = "Salvar Perfil";
   char *loadString = "Carregar Perfil";
   char *backString = "Voltar";
@@ -15,6 +16,7 @@ static void paintOptionsMenu(WINDOW *header, WINDOW *info, WINDOW *options, WIND
   wborder(header, ACS_VLINE, ACS_VLINE, ACS_HLINE, ' ', ACS_ULCORNER, ACS_URCORNER, ACS_VLINE, ACS_VLINE);
   wborder(info, ACS_VLINE, ACS_VLINE, ACS_HLINE, ' ', ACS_LTEE, ACS_RTEE, ACS_VLINE, ACS_VLINE);
   wborder(options, ACS_VLINE, ACS_VLINE, ACS_HLINE, ' ', ACS_LTEE, ACS_RTEE, ACS_VLINE, ACS_VLINE);
+  wborder(create, ACS_VLINE, ACS_VLINE, ACS_HLINE, ' ', ACS_LTEE, ACS_RTEE, ACS_VLINE, ACS_VLINE);
   wborder(save, ACS_VLINE, ACS_VLINE, ACS_HLINE, ' ', ACS_LTEE, ACS_RTEE, ACS_VLINE, ACS_VLINE);
   wborder(load, ACS_VLINE, ACS_VLINE, ACS_HLINE, ' ', ACS_LTEE, ACS_RTEE, ACS_VLINE, ACS_VLINE);
   wborder(back, ACS_VLINE, ACS_VLINE, ACS_HLINE, ACS_HLINE, ACS_LTEE, ACS_RTEE, ACS_LLCORNER, ACS_LRCORNER);
@@ -46,6 +48,9 @@ static void paintOptionsMenu(WINDOW *header, WINDOW *info, WINDOW *options, WIND
   mvwaddch(options, 5, OPTIONS_MENU_WIDTH - 4, GRAPHIC_SNAKE_BODY);
   wattrset(options, A_NORMAL);
 
+  wmove(create, 1, (OPTIONS_MENU_WIDTH - strlen(createString)) / 2);
+  wprintw(create, "%s", createString);
+
   wmove(save, 1, (OPTIONS_MENU_WIDTH - strlen(saveString)) / 2);
   wprintw(save, "%s", saveString);
 
@@ -58,6 +63,7 @@ static void paintOptionsMenu(WINDOW *header, WINDOW *info, WINDOW *options, WIND
   wrefresh(header);
   wrefresh(info);
   wrefresh(options);
+  wrefresh(create);
   wrefresh(save);
   wrefresh(load);
   wrefresh(back);
@@ -187,7 +193,7 @@ static int optionsSelectedGameElement(WINDOW *window, size_t y, int graphic, int
   return input;
 }
 
-static int optionsSelection(int pos, WINDOW *options, WINDOW *save, WINDOW *load, WINDOW *back) {
+static int optionsSelection(int pos, WINDOW *options, WINDOW *create, WINDOW *save, WINDOW *load, WINDOW *back) {
   int input;
 
   switch (pos) {
@@ -202,6 +208,18 @@ static int optionsSelection(int pos, WINDOW *options, WINDOW *save, WINDOW *load
   case 5:
     return optionsSelectedGameElement(options, 5, GRAPHIC_SNAKE_BODY, &profile.colorSnakeBody);
   case 6:
+    input = optionsSelectedMono(create);
+    if (input == '\n') {
+      wclear(stdscr);
+      wrefresh(stdscr);
+      int choice = interfaceMenu("Dados atuais serão perdidos", 2, "Prosseguir", "Voltar");
+      if (choice == 1) {
+        createProfile();
+      }
+      return KEY_RESIZE;
+    }
+    return input;
+  case 7:
     input = optionsSelectedMono(save);
     if (input == '\n') {
       saveData(profile.name);
@@ -211,7 +229,7 @@ static int optionsSelection(int pos, WINDOW *options, WINDOW *save, WINDOW *load
       return KEY_RESIZE;
     }
     return input;
-  case 7:
+  case 8:
     input = optionsSelectedMono(load);
     if (input == '\n') {
       wclear(stdscr);
@@ -225,7 +243,7 @@ static int optionsSelection(int pos, WINDOW *options, WINDOW *save, WINDOW *load
       return KEY_RESIZE;
     }
     return input;
-  case 8:
+  case 9:
     input = optionsSelectedMono(back);
     return input == '\n' ? 0 : input;
   }
@@ -234,7 +252,7 @@ static int optionsSelection(int pos, WINDOW *options, WINDOW *save, WINDOW *load
 }
 
 void optionsMenu(void) {
-  int pos = 8;
+  int pos = 9;
   int input;
 
   do {
@@ -245,32 +263,35 @@ void optionsMenu(void) {
     WINDOW *header = newwin(2, OPTIONS_MENU_WIDTH, (LINES - 19) / 2, (COLS - OPTIONS_MENU_WIDTH) / 2);
     WINDOW *info = newwin(4, OPTIONS_MENU_WIDTH, getbegy(header) + 2, (COLS - OPTIONS_MENU_WIDTH) / 2);
     WINDOW *options = newwin(6, OPTIONS_MENU_WIDTH, getbegy(info) + 4, (COLS - OPTIONS_MENU_WIDTH) / 2);
-    WINDOW *save = newwin(2, OPTIONS_MENU_WIDTH, getbegy(options) + 6, (COLS - OPTIONS_MENU_WIDTH) / 2);
+    WINDOW *create = newwin(2, OPTIONS_MENU_WIDTH, getbegy(options) + 6, (COLS - OPTIONS_MENU_WIDTH) / 2);
+    WINDOW *save = newwin(2, OPTIONS_MENU_WIDTH, getbegy(create) + 2, (COLS - OPTIONS_MENU_WIDTH) / 2);
     WINDOW *load = newwin(2, OPTIONS_MENU_WIDTH, getbegy(save) + 2, (COLS - OPTIONS_MENU_WIDTH) / 2);
     WINDOW *back = newwin(3, OPTIONS_MENU_WIDTH, getbegy(load) + 2, (COLS - OPTIONS_MENU_WIDTH) / 2);
 
     keypad(options, true);
+    keypad(create, true);
     keypad(save, true);
     keypad(load, true);
     keypad(back, true);
 
-    paintOptionsMenu(header, info, options, save, load, back);
+    paintOptionsMenu(header, info, options, create, save, load, back);
 
     do {
-      input = optionsSelection(pos, options, save, load, back);
+      input = optionsSelection(pos, options, create, save, load, back);
       
       switch (input) {
       case KEY_UP:
-        pos = pos > 1 ? pos - 1 : 8;
+        pos = pos > 1 ? pos - 1 : 9;
         break;
       case KEY_DOWN:
-        pos = pos < 8 ? pos + 1 : 1;
+        pos = pos < 9 ? pos + 1 : 1;
       }
     } while (input != 0 && input != KEY_RESIZE);
 
     wclear(header);
     wclear(info);
     wclear(options);
+    wclear(create);
     wclear(save);
     wclear(load);
     wclear(back);
@@ -278,6 +299,7 @@ void optionsMenu(void) {
     wrefresh(header);
     wrefresh(info);
     wrefresh(options);
+    wrefresh(create);
     wrefresh(save);
     wrefresh(load);
     wrefresh(back);
@@ -285,6 +307,7 @@ void optionsMenu(void) {
     delwin(header);
     delwin(info);
     delwin(options);
+    delwin(create);
     delwin(save);
     delwin(load);
     delwin(back);

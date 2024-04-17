@@ -21,24 +21,14 @@ int main(void) {
 
   if (!has_colors()) {
     endwin();
-    printf("Snake: Terminal não suporta cores.\n");
+    printf("Snake: Seu terminal não suporta cores.\n");
     return 1;
   }
 
   initializeColors();
 
   if (!loadData(DEFAULT_DATA_FILE_NAME)) {
-    interfaceGetStringInput("Digite seu nome", profile.name, NAME_LEN);
-
-    profile.bestScore = 0;
-    profile.mostRecentScore = 0;
-
-    profile.height = DEFAULT_HEIGHT;
-    profile.width = DEFAULT_WIDTH;
-
-    profile.colorFood = RED;
-    profile.colorSnakeHead = GREEN;
-    profile.colorSnakeBody = WHITE;
+    createProfile();
   }
 
   mainMenu();

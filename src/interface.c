@@ -158,3 +158,17 @@ void interfaceGetStringInput(char *msg, char *destiny, size_t lenght) {
   curs_set(false);
   clear();
 }
+
+void createProfile(void) {
+  interfaceGetStringInput("Digite seu nome", profile.name, NAME_LEN);
+
+  profile.bestScore = 0;
+  profile.mostRecentScore = 0;
+
+  profile.height = DEFAULT_HEIGHT;
+  profile.width = DEFAULT_WIDTH;
+
+  profile.colorFood = RED;
+  profile.colorSnakeHead = GREEN;
+  profile.colorSnakeBody = WHITE;
+}

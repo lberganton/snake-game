@@ -12,3 +12,4 @@ void interfaceString(const char *title, const size_t n, ...);
 void interfaceOptions(void);
 void interfaceGetStringInput(char *msg, char *destiny, size_t lenght);
 void optionsMenu(void);
+void createProfile(void);
