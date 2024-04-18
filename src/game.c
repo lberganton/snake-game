@@ -70,7 +70,7 @@ void startGame(void) {
 
   while (true) {
     int input = wgetch(map.window);
-    clearInputBuffer(map.window);
+    flushinp();
 
     if (input == KEY_RESIZE) {
       if (LINES < profile.height + 5 || COLS < profile.width + 2) {
@@ -88,7 +88,7 @@ void startGame(void) {
       printCenterMessage("VOCÊ PERDEU!", map.window);
       wrefresh(map.window);
       sleep(2);
-      clearInputBuffer(map.window);
+      flushinp();
       break;
     }
 

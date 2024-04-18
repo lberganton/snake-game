@@ -52,4 +52,3 @@ typedef struct Profile {
 
 bool loadData(char *fileName);
 bool saveData(char *fileName);
-void clearInputBuffer(WINDOW *window);

@@ -22,8 +22,3 @@ bool saveData(char *fileName) {
   fclose(file);
   return true;
 }
-
-void clearInputBuffer(WINDOW *window) {
-  while (wgetch(window) != ERR)
-    ;
-}
