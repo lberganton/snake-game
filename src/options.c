@@ -268,11 +268,11 @@ void optionsMenu(void) {
   int input;
 
   do {
-    if (LINES < 19 || COLS < OPTIONS_MENU_WIDTH) {
-      handleWithSmallTermSize(19, OPTIONS_MENU_WIDTH);
+    if (LINES < 21 || COLS < OPTIONS_MENU_WIDTH) {
+      handleWithSmallTermSize(21, OPTIONS_MENU_WIDTH);
     }
 
-    WINDOW *header = newwin(2, OPTIONS_MENU_WIDTH, (LINES - 19) / 2,
+    WINDOW *header = newwin(2, OPTIONS_MENU_WIDTH, (LINES - 21) / 2,
                             (COLS - OPTIONS_MENU_WIDTH) / 2);
     WINDOW *info = newwin(4, OPTIONS_MENU_WIDTH, getbegy(header) + 2,
                           (COLS - OPTIONS_MENU_WIDTH) / 2);

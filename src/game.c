@@ -15,16 +15,16 @@ void initializeGameScreen(GameMap *map, GameScreen *screen) {
   screen->border = newwin(profile.height + 2, profile.width + 2,
                           (LINES - (profile.height + 2 + 3)) / 2,
                           (COLS - (profile.width + 2)) / 2);
-  box(screen->border, ACS_VLINE, ACS_HLINE);
-
   screen->info =
       newwin(3, MIN_WIDTH, getbegy(screen->border) + getmaxy(screen->border),
              (COLS - MIN_WIDTH) / 2);
-  box(screen->info, ACS_VLINE, ACS_HLINE);
-
   map->window =
       newwin(profile.height, profile.width, getbegy(screen->border) + 1,
              getbegx(screen->border) + 1);
+
+  box(screen->border, ACS_VLINE, ACS_HLINE);
+  box(screen->info, ACS_VLINE, ACS_HLINE);
+
   keypad(map->window, true);
   nodelay(map->window, true);
 
