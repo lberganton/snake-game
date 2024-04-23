@@ -7,6 +7,8 @@
 #define Y_PLAYER (Y_MAP - 1)
 #define X_PLAYER (X_MAP / 2)
 
+typedef struct GamePlayer GamePlayer;
+
 typedef enum GameElement {
   ELEMENT_VOID,
   ELEMENT_FOOD,
@@ -27,8 +29,6 @@ typedef struct GameScreen {
   WINDOW *border;
   WINDOW *info;
 } GameScreen;
-
-typedef struct GamePlayer GamePlayer;
 
 void startGame(void);
 void initializeGameScreen(GameMap *map, GameScreen *screen);
