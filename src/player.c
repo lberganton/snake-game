@@ -4,7 +4,6 @@
  * Created: 04/01/2024
  * Description: Implements player-related functions.
  *****************************************************************************/
-#include "player.h"
 #include "config.h"
 #include "game.h"
 #include "interface.h"
