@@ -12,23 +12,29 @@
 
 extern Profile profile;
 
-static void paintOptionsMenu(WINDOW *header, WINDOW *info, WINDOW *options, WINDOW *create,
-                             WINDOW *save, WINDOW *load, WINDOW *back) {
+static void paintOptionsMenu(WINDOW *header, WINDOW *info, WINDOW *options,
+                             WINDOW *create, WINDOW *save, WINDOW *load,
+                             WINDOW *back) {
   char *title = "Opções";
   char *createString = "Criar perfil";
   char *saveString = "Salvar Perfil";
   char *loadString = "Carregar Perfil";
   char *backString = "Voltar";
 
-  wborder(header, ACS_VLINE, ACS_VLINE, ACS_HLINE, ' ', ACS_ULCORNER, ACS_URCORNER, ACS_VLINE,
-          ACS_VLINE);
-  wborder(info, ACS_VLINE, ACS_VLINE, ACS_HLINE, ' ', ACS_LTEE, ACS_RTEE, ACS_VLINE, ACS_VLINE);
-  wborder(options, ACS_VLINE, ACS_VLINE, ACS_HLINE, ' ', ACS_LTEE, ACS_RTEE, ACS_VLINE, ACS_VLINE);
-  wborder(create, ACS_VLINE, ACS_VLINE, ACS_HLINE, ' ', ACS_LTEE, ACS_RTEE, ACS_VLINE, ACS_VLINE);
-  wborder(save, ACS_VLINE, ACS_VLINE, ACS_HLINE, ' ', ACS_LTEE, ACS_RTEE, ACS_VLINE, ACS_VLINE);
-  wborder(load, ACS_VLINE, ACS_VLINE, ACS_HLINE, ' ', ACS_LTEE, ACS_RTEE, ACS_VLINE, ACS_VLINE);
-  wborder(back, ACS_VLINE, ACS_VLINE, ACS_HLINE, ACS_HLINE, ACS_LTEE, ACS_RTEE, ACS_LLCORNER,
-          ACS_LRCORNER);
+  wborder(header, ACS_VLINE, ACS_VLINE, ACS_HLINE, ' ', ACS_ULCORNER,
+          ACS_URCORNER, ACS_VLINE, ACS_VLINE);
+  wborder(info, ACS_VLINE, ACS_VLINE, ACS_HLINE, ' ', ACS_LTEE, ACS_RTEE,
+          ACS_VLINE, ACS_VLINE);
+  wborder(options, ACS_VLINE, ACS_VLINE, ACS_HLINE, ' ', ACS_LTEE, ACS_RTEE,
+          ACS_VLINE, ACS_VLINE);
+  wborder(create, ACS_VLINE, ACS_VLINE, ACS_HLINE, ' ', ACS_LTEE, ACS_RTEE,
+          ACS_VLINE, ACS_VLINE);
+  wborder(save, ACS_VLINE, ACS_VLINE, ACS_HLINE, ' ', ACS_LTEE, ACS_RTEE,
+          ACS_VLINE, ACS_VLINE);
+  wborder(load, ACS_VLINE, ACS_VLINE, ACS_HLINE, ' ', ACS_LTEE, ACS_RTEE,
+          ACS_VLINE, ACS_VLINE);
+  wborder(back, ACS_VLINE, ACS_VLINE, ACS_HLINE, ACS_HLINE, ACS_LTEE, ACS_RTEE,
+          ACS_LLCORNER, ACS_LRCORNER);
 
   wmove(header, 1, (OPTIONS_MENU_WIDTH - strlen(title)) / 2);
   wprintw(header, "%s", title);
@@ -127,7 +133,8 @@ static int optionsSelectedMono(WINDOW *window) {
   return input;
 }
 
-static int optionsSelectedNumber(WINDOW *window, size_t y, int min, int max, int *value) {
+static int optionsSelectedNumber(WINDOW *window, size_t y, int min, int max,
+                                 int *value) {
   int input;
 
   do {
@@ -162,7 +169,8 @@ static int optionsSelectedNumber(WINDOW *window, size_t y, int min, int max, int
   return input;
 }
 
-static int optionsSelectedGameElement(WINDOW *window, size_t y, int graphic, int *color) {
+static int optionsSelectedGameElement(WINDOW *window, size_t y, int graphic,
+                                      int *color) {
   int input;
 
   do {
@@ -197,27 +205,33 @@ static int optionsSelectedGameElement(WINDOW *window, size_t y, int graphic, int
   return input;
 }
 
-static int optionsSelection(int pos, WINDOW *options, WINDOW *create, WINDOW *save, WINDOW *load,
-                            WINDOW *back) {
+static int optionsSelection(int pos, WINDOW *options, WINDOW *create,
+                            WINDOW *save, WINDOW *load, WINDOW *back) {
   int input;
 
   switch (pos) {
   case 1:
-    return optionsSelectedNumber(options, 1, MIN_WIDTH, MAX_WIDTH, &profile.width);
+    return optionsSelectedNumber(options, 1, MIN_WIDTH, MAX_WIDTH,
+                                 &profile.width);
   case 2:
-    return optionsSelectedNumber(options, 2, MIN_HEIGHT, MAX_HEIGHT, &profile.height);
+    return optionsSelectedNumber(options, 2, MIN_HEIGHT, MAX_HEIGHT,
+                                 &profile.height);
   case 3:
-    return optionsSelectedGameElement(options, 3, GRAPHIC_FOOD, &profile.colorFood);
+    return optionsSelectedGameElement(options, 3, GRAPHIC_FOOD,
+                                      &profile.colorFood);
   case 4:
-    return optionsSelectedGameElement(options, 4, GRAPHIC_SNAKE_HEAD, &profile.colorSnakeHead);
+    return optionsSelectedGameElement(options, 4, GRAPHIC_SNAKE_HEAD,
+                                      &profile.colorSnakeHead);
   case 5:
-    return optionsSelectedGameElement(options, 5, GRAPHIC_SNAKE_BODY, &profile.colorSnakeBody);
+    return optionsSelectedGameElement(options, 5, GRAPHIC_SNAKE_BODY,
+                                      &profile.colorSnakeBody);
   case 6:
     input = optionsSelectedMono(create);
     if (input == '\n') {
       wclear(stdscr);
       wrefresh(stdscr);
-      int choice = interfaceMenu("Dados atuais serão perdidos", 2, "Prosseguir", "Voltar");
+      int choice = interfaceMenu("Dados atuais serão perdidos", 2, "Prosseguir",
+                                 "Voltar");
       if (choice == 1) {
         createProfile();
       }
@@ -264,20 +278,20 @@ void optionsMenu(void) {
       handleWithSmallTermSize(21, OPTIONS_MENU_WIDTH);
     }
 
-    WINDOW *header =
-        newwin(2, OPTIONS_MENU_WIDTH, (LINES - 21) / 2, (COLS - OPTIONS_MENU_WIDTH) / 2);
-    WINDOW *info =
-        newwin(4, OPTIONS_MENU_WIDTH, getbegy(header) + 2, (COLS - OPTIONS_MENU_WIDTH) / 2);
-    WINDOW *options =
-        newwin(6, OPTIONS_MENU_WIDTH, getbegy(info) + 4, (COLS - OPTIONS_MENU_WIDTH) / 2);
-    WINDOW *create =
-        newwin(2, OPTIONS_MENU_WIDTH, getbegy(options) + 6, (COLS - OPTIONS_MENU_WIDTH) / 2);
-    WINDOW *save =
-        newwin(2, OPTIONS_MENU_WIDTH, getbegy(create) + 2, (COLS - OPTIONS_MENU_WIDTH) / 2);
-    WINDOW *load =
-        newwin(2, OPTIONS_MENU_WIDTH, getbegy(save) + 2, (COLS - OPTIONS_MENU_WIDTH) / 2);
-    WINDOW *back =
-        newwin(3, OPTIONS_MENU_WIDTH, getbegy(load) + 2, (COLS - OPTIONS_MENU_WIDTH) / 2);
+    WINDOW *header = newwin(2, OPTIONS_MENU_WIDTH, (LINES - 21) / 2,
+                            (COLS - OPTIONS_MENU_WIDTH) / 2);
+    WINDOW *info = newwin(4, OPTIONS_MENU_WIDTH, getbegy(header) + 2,
+                          (COLS - OPTIONS_MENU_WIDTH) / 2);
+    WINDOW *options = newwin(6, OPTIONS_MENU_WIDTH, getbegy(info) + 4,
+                             (COLS - OPTIONS_MENU_WIDTH) / 2);
+    WINDOW *create = newwin(2, OPTIONS_MENU_WIDTH, getbegy(options) + 6,
+                            (COLS - OPTIONS_MENU_WIDTH) / 2);
+    WINDOW *save = newwin(2, OPTIONS_MENU_WIDTH, getbegy(create) + 2,
+                          (COLS - OPTIONS_MENU_WIDTH) / 2);
+    WINDOW *load = newwin(2, OPTIONS_MENU_WIDTH, getbegy(save) + 2,
+                          (COLS - OPTIONS_MENU_WIDTH) / 2);
+    WINDOW *back = newwin(3, OPTIONS_MENU_WIDTH, getbegy(load) + 2,
+                          (COLS - OPTIONS_MENU_WIDTH) / 2);
 
     keypad(options, true);
     keypad(create, true);

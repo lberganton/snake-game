@@ -18,11 +18,14 @@ extern Profile profile;
 
 void initializeGameScreen(GameMap *map, GameScreen *screen) {
   screen->border = newwin(profile.height + 2, profile.width + 2,
-                          (LINES - (profile.height + 2 + 3)) / 2, (COLS - (profile.width + 2)) / 2);
-  screen->info = newwin(3, MIN_WIDTH, getbegy(screen->border) + getmaxy(screen->border),
-                        (COLS - MIN_WIDTH) / 2);
-  map->window = newwin(profile.height, profile.width, getbegy(screen->border) + 1,
-                       getbegx(screen->border) + 1);
+                          (LINES - (profile.height + 2 + 3)) / 2,
+                          (COLS - (profile.width + 2)) / 2);
+  screen->info =
+      newwin(3, MIN_WIDTH, getbegy(screen->border) + getmaxy(screen->border),
+             (COLS - MIN_WIDTH) / 2);
+  map->window =
+      newwin(profile.height, profile.width, getbegy(screen->border) + 1,
+             getbegx(screen->border) + 1);
 
   box(screen->border, ACS_VLINE, ACS_HLINE);
   box(screen->info, ACS_VLINE, ACS_HLINE);
@@ -101,7 +104,8 @@ void startGame(void) {
   deletePlayer(&player);
 
   profile.mostRecentScore = player.points;
-  profile.bestScore = player.points > profile.bestScore ? player.points : profile.bestScore;
+  profile.bestScore =
+      player.points > profile.bestScore ? player.points : profile.bestScore;
 
   saveData(DEFAULT_DATA_FILE_NAME);
 }
@@ -149,7 +153,8 @@ void createFood(GameFood *food, GameMap *map) {
   map->matrix[food->y][food->x] = ELEMENT_FOOD;
 }
 
-static void printScreenInfo(GameScreen *screen, uint8_t x, char *descriptor, uint32_t info) {
+static void printScreenInfo(GameScreen *screen, uint8_t x, char *descriptor,
+                            uint32_t info) {
   wattrset(screen->info, A_REVERSE);
   mvwprintw(screen->info, 1, x, "%s", descriptor);
   wattrset(screen->info, A_NORMAL);

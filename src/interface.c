@@ -4,8 +4,8 @@
  * Created: 04/01/2024
  * Description: Implements player-related functions.
  ******************************************************************************/
-#include "config.h"
 #include "interface.h"
+#include "config.h"
 #include <ctype.h>
 #include <curses.h>
 #include <stdarg.h>
@@ -15,7 +15,8 @@ extern Profile profile;
 
 void printCenterMessage(const char *msg, WINDOW *window) {
   wattrset(window, A_REVERSE);
-  mvwprintw(window, getmaxy(window) / 2, (getmaxx(window) - strlen(msg)) / 2, "%s", msg);
+  mvwprintw(window, getmaxy(window) / 2, (getmaxx(window) - strlen(msg)) / 2,
+            "%s", msg);
 }
 
 void handleWithSmallTermSize(int y, int x) {
@@ -45,15 +46,15 @@ int interfaceMenu(const char *title, const int n, ...) {
     va_list args;
     va_start(args, n);
 
-    WINDOW *header =
-        newwin(2, MAIN_MENU_WIDTH, (LINES - (n + 4)) / 2, (COLS - MAIN_MENU_WIDTH) / 2);
-    WINDOW *options =
-        newwin(n + 2, MAIN_MENU_WIDTH, (LINES - n) / 2, (COLS - MAIN_MENU_WIDTH) / 2);
+    WINDOW *header = newwin(2, MAIN_MENU_WIDTH, (LINES - (n + 4)) / 2,
+                            (COLS - MAIN_MENU_WIDTH) / 2);
+    WINDOW *options = newwin(n + 2, MAIN_MENU_WIDTH, (LINES - n) / 2,
+                             (COLS - MAIN_MENU_WIDTH) / 2);
 
-    wborder(header, ACS_VLINE, ACS_VLINE, ACS_HLINE, ' ', ACS_ULCORNER, ACS_URCORNER, ACS_VLINE,
-            ACS_VLINE);
-    wborder(options, ACS_VLINE, ACS_VLINE, ACS_HLINE, ACS_HLINE, ACS_LTEE, ACS_RTEE, ACS_LLCORNER,
-            ACS_LRCORNER);
+    wborder(header, ACS_VLINE, ACS_VLINE, ACS_HLINE, ' ', ACS_ULCORNER,
+            ACS_URCORNER, ACS_VLINE, ACS_VLINE);
+    wborder(options, ACS_VLINE, ACS_VLINE, ACS_HLINE, ACS_HLINE, ACS_LTEE,
+            ACS_RTEE, ACS_LLCORNER, ACS_LRCORNER);
 
     wmove(header, 1, (MAIN_MENU_WIDTH - strlen(title)) / 2);
     wprintw(header, "%s", title);
@@ -116,15 +117,15 @@ void interfaceString(const char *title, const int n, ...) {
     va_list args;
     va_start(args, n);
 
-    WINDOW *header =
-        newwin(2, MAIN_MENU_WIDTH, (LINES - (n + 4)) / 2, (COLS - MAIN_MENU_WIDTH) / 2);
-    WINDOW *options =
-        newwin(n + 2, MAIN_MENU_WIDTH, (LINES - n) / 2, (COLS - MAIN_MENU_WIDTH) / 2);
+    WINDOW *header = newwin(2, MAIN_MENU_WIDTH, (LINES - (n + 4)) / 2,
+                            (COLS - MAIN_MENU_WIDTH) / 2);
+    WINDOW *options = newwin(n + 2, MAIN_MENU_WIDTH, (LINES - n) / 2,
+                             (COLS - MAIN_MENU_WIDTH) / 2);
 
-    wborder(header, ACS_VLINE, ACS_VLINE, ACS_HLINE, ' ', ACS_ULCORNER, ACS_URCORNER, ACS_VLINE,
-            ACS_VLINE);
-    wborder(options, ACS_VLINE, ACS_VLINE, ACS_HLINE, ACS_HLINE, ACS_LTEE, ACS_RTEE, ACS_LLCORNER,
-            ACS_LRCORNER);
+    wborder(header, ACS_VLINE, ACS_VLINE, ACS_HLINE, ' ', ACS_ULCORNER,
+            ACS_URCORNER, ACS_VLINE, ACS_VLINE);
+    wborder(options, ACS_VLINE, ACS_VLINE, ACS_HLINE, ACS_HLINE, ACS_LTEE,
+            ACS_RTEE, ACS_LLCORNER, ACS_LRCORNER);
 
     wmove(header, 1, (MAIN_MENU_WIDTH - strlen(title)) / 2);
     wprintw(header, "%s", title);
