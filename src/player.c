@@ -142,7 +142,7 @@ void updateBody(GameMap *map, GameBody *body, uint16_t gotoY, uint16_t gotoX) {
 bool createBody(GameMap *map, GamePlayer *player) {
   GameBody *new = (GameBody *)malloc(sizeof(GameBody));
   if (!new) {
-    printCenterMessage(MSG_ALLOCATION_FAILED, map->window);
+    printCenterMessage("FALHA NA ALOCAÇÃO DE MEMÓRIA!", map->window);
     return false;
   }
 
