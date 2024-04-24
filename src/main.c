@@ -1,3 +1,10 @@
+/*****************************************************************************
+ * File: main.c
+ * Author: Lucas Berganton
+ * Created: 04/01/2024
+ * Description: Initiliaze and configures the environment and provides
+ * the main menu.
+ *****************************************************************************/
 #include "config.h"
 #include "game.h"
 #include "interface.h"

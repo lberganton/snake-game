@@ -1,3 +1,9 @@
+/*****************************************************************************
+ * File: game.h
+ * Author: Lucas Berganton
+ * Created: 04/01/2024
+ * Description: Definition of the structs and function for the game.
+ *****************************************************************************/
 #pragma once
 
 #include "config.h"

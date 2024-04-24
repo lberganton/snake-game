@@ -1,3 +1,10 @@
+/*****************************************************************************
+ * File: config.h
+ * Author: Lucas Berganton
+ * Created: 04/01/2024
+ * Description: Provides the definition of 'profile' struct and some useful
+ * macros that configures some of the technical elements.
+ *****************************************************************************/
 #pragma once
 
 #include <curses.h>

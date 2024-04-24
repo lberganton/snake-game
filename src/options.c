@@ -1,3 +1,9 @@
+/*****************************************************************************
+ * File: options.c
+ * Author: Lucas Berganton
+ * Created: 04/18/2024
+ * Description: Implements the options menu.
+ *****************************************************************************/
 #include "config.h"
 #include "interface.h"
 #include <curses.h>

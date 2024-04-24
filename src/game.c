@@ -1,3 +1,9 @@
+/*****************************************************************************
+ * File: game.c
+ * Author: Lucas Berganton
+ * Created: 04/01/2024
+ * Description: Implements game-related functions, like the main loop.
+ *****************************************************************************/
 #include "game.h"
 #include "config.h"
 #include "interface.h"

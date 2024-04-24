@@ -1,3 +1,9 @@
+/*****************************************************************************
+ * File: config.c
+ * Author: Lucas Berganton
+ * Created: 04/01/2024
+ * Description: Implements functions to manipulated the data files.
+ *****************************************************************************/
 #include "config.h"
 #include <stdio.h>
 

@@ -1,3 +1,9 @@
+/*****************************************************************************
+ * File: interface.c
+ * Author: Lucas Berganton
+ * Created: 04/01/2024
+ * Description: Implements player-related functions.
+ ******************************************************************************/
 #include "config.h"
 #include <ctype.h>
 #include <curses.h>

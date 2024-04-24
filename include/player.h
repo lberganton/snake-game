@@ -1,3 +1,9 @@
+/*****************************************************************************
+ * File: player.h
+ * Author: Lucas Berganton
+ * Created: 04/01/2024
+ * Description: Functions for some interfaces used in the program.
+ *****************************************************************************/
 #pragma once
 
 #include "game.h"
