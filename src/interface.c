@@ -5,6 +5,7 @@
  * Description: Implements player-related functions.
  ******************************************************************************/
 #include "config.h"
+#include "interface.h"
 #include <ctype.h>
 #include <curses.h>
 #include <stdarg.h>

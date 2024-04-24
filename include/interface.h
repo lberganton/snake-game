@@ -9,6 +9,9 @@
 #include <curses.h>
 #include <stdarg.h>
 
+#define MAIN_MENU_WIDTH 30
+#define OPTIONS_MENU_WIDTH 38
+
 void printCenterMessage(const char *msg, WINDOW *window);
 void handleWithSmallTermSize(int y, int x);
 int interfaceMenu(const char *title, const size_t n, ...);
