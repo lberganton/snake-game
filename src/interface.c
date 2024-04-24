@@ -14,9 +14,11 @@
 extern Profile profile;
 
 void printCenterMessage(const char *msg, WINDOW *window) {
+  int y = getmaxy(window) / 2;
+  int x = (getmaxx(window) - strlen(msg)) / 2;
+  
   wattrset(window, A_REVERSE);
-  mvwprintw(window, getmaxy(window) / 2, (getmaxx(window) - strlen(msg)) / 2,
-            "%s", msg);
+  mvwprintw(window, y, x, "%s", msg);
 }
 
 void handleWithSmallTermSize(int y, int x) {

@@ -66,5 +66,5 @@ void updateGameScreen(GamePlayer *player, GameMap *map, GameScreen *screen);
 void initializePlayer(GamePlayer *player, GameMap *map);
 bool updatePlayer(GameMap *map, GamePlayer *player, GameFood *food, int input);
 bool createBody(GameMap *map, GamePlayer *player);
-void updateBody(GameMap *map, GameBody *player, uint16_t y, uint16_t x);
+void updateBody(GameMap *map, GameBody *body, uint16_t y, uint16_t x);
 void deletePlayer(GamePlayer *player);

@@ -230,7 +230,9 @@ static int optionsSelection(int pos, WINDOW *options, WINDOW *create,
     if (input == '\n') {
       wclear(stdscr);
       wrefresh(stdscr);
-      int choice = interfaceMenu("Dados atuais serão perdidos", 2, "Prosseguir",
+      int choice = interfaceMenu("Dados atuais serão perdidos",
+                                 2,
+                                 "Prosseguir",
                                  "Voltar");
       if (choice == 1) {
         createProfile();
