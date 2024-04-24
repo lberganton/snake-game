@@ -1,5 +1,5 @@
 /*****************************************************************************
- * File: config.c
+ * File: data.c
  * Author: Lucas Berganton
  * Created: 04/01/2024
  * Description: Implements functions to manipulated the data files.
