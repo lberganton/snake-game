@@ -10,9 +10,6 @@
 #include <curses.h>
 #include <inttypes.h>
 
-#define Y_PLAYER (Y_MAP - 1)
-#define X_PLAYER (X_MAP / 2)
-
 typedef struct GamePlayer GamePlayer;
 
 typedef enum GameElement {
