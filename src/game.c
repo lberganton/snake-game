@@ -74,6 +74,8 @@ void gameLoop(void) {
   double increase = (GAME_MAX_DELAY - GAME_MIN_DELAY) / GAME_SPEED_INCREASE;
 
   while (true) {
+    updateGameScreen(&player, &map, &screen);
+    
     int input = wgetch(map.window);
     flushinp();
 
@@ -86,8 +88,6 @@ void gameLoop(void) {
       initializeGameScreen(&map, &screen);
       paintMap(&map);
     }
-
-    updateGameScreen(&player, &map, &screen);
 
     if (!updatePlayer(&map, &player, &food, input)) {
       printCenterMessage("VOCÊ PERDEU!", map.window);
