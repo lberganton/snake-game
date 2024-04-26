@@ -20,9 +20,9 @@ CURSESLIB = -l ncursesw
 
 # Rules
 %.o: %.c
-	@echo "Compilando $<. . . "
+	@echo "Compiling $<. . . "
 	@$(CC) -c $(CFLAGS) $(CINCLUDE) -o $@ $<
-	@echo "Arquivo $@ gerado."
+	@echo "File $@ generated."
 
 # Targets
 all: compile link
@@ -30,36 +30,36 @@ all: compile link
 compile: $(COBJ)
 
 link:
-	@echo "Linkando arquivos. . . "
+	@echo "Linking files. . . "
 	@$(LINK) -o $(TARGET) $(COBJ) $(CURSESLIB)
-	@echo "Jogo montado."
+	@echo "Game builded."
 
 compile-with-local-curses:
 ifeq ($(OS), Windows_NT)
-	@echo "Compilando jogo. . . "
+	@echo "Compiling game. . . "
 	@$(CC) $(FLAGS) $(CINCLUDE) -I$(LIB)/PDCurses -o $(TARGET) $(CSRC) $(LIB)/PDCurses/wincon/pdcurses.a
-	@echo "Jogo compilado."
+	@echo "Game compiled."
 else
-	@echo "Isso só é possível em sistemas Windows."
+	@echo "This is only possible at Windows systems."
 endif
 
 build-curses:
 ifeq ($(OS), Windows_NT)
 	@mkdir $(LIB)
-	@echo "Diretório 'lib' criado."
+	@echo "Directory 'lib' criado."
 
-	@echo "Clonando repositório. . ."
+	@echo "Cloning repository. . ."
 	@cd $(LIB) && git clone https://github.com/wmcbrine/PDCurses
-	@echo "Repositório clonado."
+	@echo "Repository cloned."
 
-	@echo "Compilando PDCurses. . . "
+	@echo "Building PDCurses. . . "
 	@cd $(LIB)/PDCurses/wincon && mingw32-make.exe -s WIDE=Y UTF8=Y
-	@echo "PDCurses compilado. . . "
+	@echo "PDCurses builded. . . "
 else
-	@echo "Isso só é possível em sistemas Windows."
+	@echo "This is only possible at Windows systems."
 endif
 
 .PHONY: clean
 clean:
 	@rm $(COBJ)
-	@echo "Diretórios limpos."
+	@echo "Cleaned directories."
