@@ -29,8 +29,8 @@ void initializePlayer(GamePlayer *player, GameMap *map) {
 }
 
 bool updatePlayer(GameMap *map, GamePlayer *player, GameFood *food, int input) {
-  uint16_t oldY = player->y;
-  uint16_t oldX = player->x;
+  uint16_t headY = player->y;
+  uint16_t headX = player->x;
 
   switch (input) {
   case 'w':
@@ -93,13 +93,13 @@ bool updatePlayer(GameMap *map, GamePlayer *player, GameFood *food, int input) {
     return false;
   }
 
-  map->matrix[oldY][oldX] = ELEMENT_VOID;
-  paintElement(map, ELEMENT_VOID, oldY, oldX);
+  map->matrix[headY][headX] = ELEMENT_VOID;
+  paintElement(map, ELEMENT_VOID, headY, headX);
 
   map->matrix[player->y][player->x] = ELEMENT_SNAKE_HEAD;
   paintElement(map, ELEMENT_SNAKE_HEAD, player->y, player->x);
 
-  updateBody(map, player->start, oldY, oldX);
+  updateBody(map, player->start, headY, headX);
 
   if (player->y == food->y && player->x == food->x) {
     player->collected++;
@@ -123,10 +123,10 @@ bool updatePlayer(GameMap *map, GamePlayer *player, GameFood *food, int input) {
 void updateBody(GameMap *map, GameBody *body, uint16_t gotoY, uint16_t gotoX) {
   if (body) {
     map->matrix[body->y][body->x] = ELEMENT_VOID;
-    paintElement(map, ELEMENT_VOID, body->y, body->x);
-
-    paintElement(map, ELEMENT_SNAKE_BODY, gotoY, gotoX);
     map->matrix[gotoY][gotoX] = ELEMENT_SNAKE_BODY;
+
+    paintElement(map, ELEMENT_VOID, body->y, body->x);
+    paintElement(map, ELEMENT_SNAKE_BODY, gotoY, gotoX);
 
     uint16_t swapY = body->y;
     uint16_t swapX = body->x;

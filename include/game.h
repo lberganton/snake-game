@@ -11,6 +11,11 @@
 #include <inttypes.h>
 #include <stdbool.h>
 
+typedef struct GameScreen {
+  WINDOW *border;
+  WINDOW *info;
+} GameScreen;
+
 typedef enum GameElement {
   ELEMENT_VOID,
   ELEMENT_FOOD,
@@ -26,11 +31,6 @@ typedef struct GameMap {
 typedef struct GameFood {
   uint16_t x, y;
 } GameFood;
-
-typedef struct GameScreen {
-  WINDOW *border;
-  WINDOW *info;
-} GameScreen;
 
 typedef enum Direction {
   DIRECTION_UP,
