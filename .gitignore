@@ -1,0 +1,6 @@
+# Object files
+*.o
+
+# Related-game files
+snake
+data
