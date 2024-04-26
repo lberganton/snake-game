@@ -59,7 +59,7 @@ void initializeMap(GameMap *map) {
   }
 }
 
-void startGame(void) {
+void gameLoop(void) {
   GamePlayer player;
   GameFood food;
   GameMap map;

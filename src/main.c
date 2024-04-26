@@ -91,7 +91,7 @@ void mainMenu(void) {
       if (LINES < profile.height + 5 || COLS < profile.width + 2) {
         handleWithSmallTermSize(profile.height + 5, profile.width + 2);
       }
-      startGame();
+      gameLoop();
       break;
     case 2:
       optionsMenu();

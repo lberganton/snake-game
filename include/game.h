@@ -54,7 +54,7 @@ typedef struct GamePlayer {
   GameBody *start, *end;
 } GamePlayer;
 
-void startGame(void);
+void gameLoop(void);
 void initializeGameScreen(GameMap *map, GameScreen *screen);
 void deleteGameScreen(GameMap *map, GameScreen *screen);
 void initializeMap(GameMap *map);
