@@ -46,7 +46,7 @@ endif
 build-curses:
 ifeq ($(OS), Windows_NT)
 	@mkdir $(LIB)
-	@echo "Directory 'lib' criado."
+	@echo "'lib' directory created."
 
 	@echo "Cloning repository. . ."
 	@cd $(LIB) && git clone https://github.com/wmcbrine/PDCurses
@@ -61,5 +61,5 @@ endif
 
 .PHONY: clean
 clean:
-	@rm $(COBJ)
+	@rm $(wildcard $(SRC)/*.o)
 	@echo "Cleaned directories."

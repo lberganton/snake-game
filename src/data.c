@@ -6,25 +6,43 @@
  *****************************************************************************/
 #include "config.h"
 #include <stdio.h>
+#include <string.h>
 
 extern Profile profile;
 
 bool loadData(char *fileName) {
-  FILE *file = fopen(fileName, "rb");
+  char buffer[32];
+
+  strncpy(buffer, fileName, strlen(fileName) + 1);
+  strncat(buffer, DATA_FILE_EXTENSION, strlen(DATA_FILE_EXTENSION) + 1);
+
+  FILE *file = fopen(buffer, "rb");
   if (!file) {
     return false;
   }
+
   fread(&profile, sizeof(Profile), 1, file);
   fclose(file);
+
   return true;
 }
 
+#include <curses.h>
+#include <stdlib.h>
+
 bool saveData(char *fileName) {
-  FILE *file = fopen(fileName, "wb");
+  char buffer[32];
+
+  strncpy(buffer, fileName, strlen(fileName) + 1);
+  strncat(buffer, DATA_FILE_EXTENSION, strlen(DATA_FILE_EXTENSION) + 1);
+  
+  FILE *file = fopen(buffer, "wb");
   if (!file) {
     return false;
   }
+
   fwrite(&profile, sizeof(Profile), 1, file);
   fclose(file);
+
   return true;
 }

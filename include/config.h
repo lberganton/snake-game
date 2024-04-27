@@ -11,6 +11,7 @@
 #include <inttypes.h>
 
 #define DEFAULT_DATA_FILE_NAME "data"
+#define DATA_FILE_EXTENSION ".data"
 #define NAME_LEN 15
 
 #define GAME_MAX_DELAY 100000
