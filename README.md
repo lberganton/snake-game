@@ -6,10 +6,10 @@ O projeto foi feito com o foco em sistemas Linux/UNIX-like e a biblioteca NCurse
 Este projeto foi feito apenas como forma de estudo.
 
 ### ATENÇÃO!!!
-PDcurses é bem limitado se comparado a NCurses. Se compilado com a segunda, o jogo funcionará mas poderá apresentará algumas limitações como a falta de cores especialmente definidas para o programa.
+PDcurses é bem limitado se comparado a NCurses. Se compilado com a segunda, o jogo funcionará mas pode apresentar algumas limitações.
 
 ## Como Compilar
-É necessário o compilador GCC e um leitor de Makefiles. Em distros linux esses utilitários são facilmente em pacotes como `build-essential` em sistemas com base em Debian.
+É necessário o compilador GCC e um leitor de Makefiles. Em distros linux esses utilitários são facilmente encontrados em pacotes como `build-essential` no caso de sistemas com base em Debian.
 Para Windows, os scripts de montagem foram feitos com base no projeto MinGW, uma implementação do GCC e Make para sistemas Windows.
 ### Linux/Unix-like
 Tendo a biblioteca NCurses já instalada, basta usar o comando:
@@ -28,13 +28,13 @@ make compile-with-local-curses
 ## Aprendendo a Jogar
 O jogo usa um sistema de perfis para salvar os dados do jogador. Assim que o jogo iniciar ele pedirá pelo nome do usuário e criará um perfil com ele.
 
-Para jogar selecione `Inicar`. Os botões de locomoção são: `W`, `A`, `D`, `S` além das setas do teclado.
+Para jogar selecione `Inicar`. Os botões de locomoção são: `W`, `A`, `S`, `D` além das setas do teclado.
 
 No menu de opções é possível ver a melhor pontuação e a pontuação mais recente do perfil. Além de poder alterar a largura da grade e as cores dos objetos do jogo.
 
 Com a opção de salvar perfil, o jogo cria um arquivo com a extensão `.data` com o nome do usuário, sendo possível carrega-lo com a opção correspondente digitando o nome
 do perfil.
 
-O jogo guarda os dados do perfil em uso em um arquivos `.data`. Todo o perfil para ser usado, precisa antes ser carregado para esse arquivo. Portanto, antes de mudar de perfil, sempre salve-o para não perder o progresso feito.
+O jogo armazena os dados do perfil em uso em um arquivo chamado de `data.data`. Todo o perfil para ser usado precisa antes ser carregado para esse arquivo. Portanto, antes de mudar de perfil, sempre salve-o para não perder o progresso feito.
 
 Criar um novo perfil significa sobrescrever todos os dados atuais do arquivo `data.data`. Portanto, salve o perfil atual caso queira usa-lo novamente.
