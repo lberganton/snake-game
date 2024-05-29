@@ -5,7 +5,7 @@ O projeto foi feito com o foco em sistemas Linux/UNIX-like e a biblioteca NCurse
 
 Este projeto foi feito apenas como forma de estudo.
 
-### ATENÇÃO!!!
+### ATENÇÃO ⚠️
 PDcurses é bem limitado se comparado a NCurses. Se compilado com a segunda, o jogo funcionará mas pode apresentar algumas limitações.
 
 ## Como Compilar
@@ -19,11 +19,11 @@ make
 ### Windows
 Primeiro, é preciso baixar e montar a biblioteca PDCurses:
 ```
-make build-curses
+mingw32-make.exe build-curses
 ```
 Depois, compilar o jogo usando a biblioteca já montada:
 ```
-make compile-with-local-curses
+mingw32-make.exe compile-with-local-curses
 ```
 ## Aprendendo a Jogar
 O jogo usa um sistema de perfis para salvar os dados do jogador. Assim que o jogo iniciar ele pedirá pelo nome do usuário e criará um perfil com ele.
